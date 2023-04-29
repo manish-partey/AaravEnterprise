@@ -1,30 +1,57 @@
-﻿
+﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AaravEnterprise.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
+            _dbContext= dbContext;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
+           
             return View();
         }
 
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public IActionResult Service()
+        {
+            return View();
+        }
+
+        public IActionResult Shipping()
+        {
+            return View();
+        }
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult Refund()
+        {
+            return View();
+        }
+        public IActionResult TermsAndCondition()
         {
             return View();
         }
@@ -33,7 +60,5 @@ namespace AaravEnterprise.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-
     }
 }

@@ -7,7 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaravWebSolution.Models
+namespace AaravEnterprise.Models
 {
     public class Package
     {

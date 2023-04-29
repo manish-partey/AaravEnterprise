@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaravWebSolution.Models
+namespace AaravEnterprise.Models
 {
     public class Order
     {

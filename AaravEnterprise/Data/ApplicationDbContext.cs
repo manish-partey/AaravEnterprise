@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using AaravWebSolution.Models;
+using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace AaravWebSolution.DataAccess
+namespace AaravEnterprise.DataAccess
 {
     public class ApplicationDbContext : IdentityDbContext
     {

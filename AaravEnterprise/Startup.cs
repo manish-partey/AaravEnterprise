@@ -28,7 +28,7 @@ namespace AaravEnterprise
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
-            services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString_Dev")));
+            services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
            
             services.ConfigureApplicationCookie(options =>
             {

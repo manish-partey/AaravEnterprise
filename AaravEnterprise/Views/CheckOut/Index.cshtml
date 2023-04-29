@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
-
-@model IEnumerable<dynamic>
+@using AaravEnterprise.ViewModel;
+@model List<CartViewModel>
 @{
     ViewData["Title"] = "CheckOut";
 }
@@ -36,7 +36,7 @@
                             <th class="table-heading">Service Name</th>
                             <th class="table-heading">Package Selected</th>
                             <th class="center table-heading"> Amount </th>
-                            
+
                         </tr>
                     </thead>
                     <tbody>
@@ -45,7 +45,7 @@
                             <tr id="rm1">
                                 <td class="center"> @item.CartId</td>
                                 <td class="left strong">@item.ServiceTitle</td>
-                                <td class="left">@item.PackageTitle</td>                                
+                                <td class="left">@item.PackageTitle</td>
                                 <td class="center"> @item.Amount </td>
                                 <input type="hidden" name="prodid[]" value="" />
                                 <input type="hidden" name="price[]" value="369">

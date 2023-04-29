@@ -1,5 +1,6 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
+using AaravEnterprise.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace AaravEnterprise.Controllers
         {
             var query = from t1 in _dbContext.Package
                         join t2 in _dbContext.Services on t1.ServicesId equals t2.Id                       
-                        select new
+                        select new PackagesAdminViewModel
                         {
                             Id = t2.Id,
                             ServiceTitle = t2.ServiceTitle,

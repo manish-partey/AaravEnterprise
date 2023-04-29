@@ -4,6 +4,7 @@ using AaravEnterprise.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AaravEnterprise.ViewModel;
 
 namespace AaravEnterprise.Controllers
 {
@@ -33,17 +34,16 @@ namespace AaravEnterprise.Controllers
                             join S in _dbContext.Services on C.ServiceId equals S.Id
                             join P in _dbContext.Package on C.PackageId equals P.Id
                             where C.ApplicationUserId == userId
-                            select new
+                            select new CartViewModel
                             {
-                                C.CartId,
-                                S.ServiceTitle,                               
-                                P.PackageTitle,
-                                C.Amount
-                              
+                                CartId = C.CartId,
+                                ServiceTitle = S.ServiceTitle,
+                                PackageTitle = P.PackageTitle,
+                                Amount = C.Amount
                             };
                 var cart = query.ToList();
                 var total = query.Sum(p => p.Amount);
-                ViewBag.Total = total; //
+                ViewBag.Total = total;
                 return View(cart);
             }    
         }

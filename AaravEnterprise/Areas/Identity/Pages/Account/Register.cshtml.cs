@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -60,6 +61,18 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+            [Display(Name = "Street Address")]
+            public string? StreetAddress { get; set; }
+            [Display(Name = "City")]
+            public string? City { get; set; }
+            [Display(Name = "State")]
+            public string? State { get; set; }
+            [Display(Name = "Postal Code")]
+            public string? PostalCode { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -74,7 +87,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Name= Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

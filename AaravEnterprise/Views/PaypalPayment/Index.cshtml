@@ -1,0 +1,16 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<!-- display messagesto the payer -->
+@if (Model != null && Model.Count > 0)
+{
+    foreach (string res in Model)
+    {
+        <div class="h4">@res</div>
+    }
+}    

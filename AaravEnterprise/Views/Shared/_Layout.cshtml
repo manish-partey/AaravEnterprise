@@ -1,48 +1,85 @@
-﻿<!DOCTYPE html>
+﻿@using AaravEnterprise.Models
+@using AaravEnterprise.DataAccess
+@using AaravEnterprise.Utility;
+@inject ApplicationDbContext dbContext
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AaravEnterprise</title>
+    <title>@ViewData["Title"] - AaravWebSolution</title>
+    <link rel="stylesheet" href="https://www.tejvirwebsolution.com/css/style.css">
+    <link rel="stylesheet" href="https://www.tejvirwebsolution.com/css/style-pages.css">
+    <script src="https://www.tejvirwebsolution.com/css/php-email-form/validate.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AaravWebSolution.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AaravEnterprise</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+        <nav id="navbar" class="navbar order-last order-lg-0">
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                <li class="dropdown">
+                    <a href="#"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        @foreach (var item in dbContext.Services)
+                        {
+                            <li>
+                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                            </li>
+                        }
                     </ul>
-                </div>
-            </div>
-        </nav>
+                </li>
+                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
+                }
+                @if (Context.User.Identity.IsAuthenticated && Context.User.HasClaim(c => c.Value == SD.Role_Admin))
+                {
+                    <li class="dropdown">
+                        <a href="#"><span>Content Management</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li>
+                                <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
+                            </li>
+                            <li>
+                                <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+            <partial name="_LoginPartial" />
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
     </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
+    <div class="container">
+        <main role="main" class="pb-3">
+            <partial name="_Notification" />
+            @RenderBody()
+        </main>
+    </div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - AaravEnterprise - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - AaravWebSolution - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Services";
+    List<Services> objServices = new List<Services> { ViewBag.Services };
+    List<Package> objPackage = ViewBag.Packages;
+}
+
+<section>
+    @foreach (var items in objServices)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
+                    <h3>@items.ServiceTitle</h3>
+                    <p>@Html.Raw(@items.ServiceDescription)</p>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+<section>
+    <div class="container" data-aos="fade-up">
+        <div class="row">
+            @foreach (var item in objPackage)
+            {               
+                    <div class="col-4" style="padding: 20px;  background: #fff;  text-align: center;  border: 1px solid #eef0ef;  border-radius: 0;  position: relative;  overflow: hidden;">
+                        <div class="row" style="text-align:center;color: #fff; background: #ffb559;">
+                        <h2>@item.PackageTitle</h2>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <h4><sup>$</sup>@item.Price</h4>
+                    </div>
+                    <br>
+                    <div class="row">@Html.Raw(@item.PackageDescription)</div>
+                    <br>
+                    <a asp-action="AddToCart" asp-controller="Cart" asp-route-Amount="@item.Price" asp-route-ServiceId="@item.Id" asp-route-PackageId="@item.Id" class="btn btn-primary">Add to Cart</a>
+                </div>               
+            }
+        </div>
+    </div>
+</section>

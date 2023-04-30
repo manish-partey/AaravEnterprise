@@ -64,10 +64,13 @@ namespace AaravEnterprise.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
+            var objectService = _dbContext.Services.FirstOrDefault(c => c.Id == ServiceId);
+            var objectPackage = _dbContext.Package.FirstOrDefault(c => c.Id == PackageId);
             cart = new Cart();
             cart.ApplicationUserId = userId;
             cart.Amount = Amount;
+            cart.Package = objectPackage;
+            cart.Service = objectService;
             cart.PackageId = PackageId;
             cart.ServiceId = ServiceId;
             _dbContext.Cart.Add(cart);

@@ -33,7 +33,7 @@
                     <br>
                     <div class="row">@Html.Raw(@item.PackageDescription)</div>
                     <br>
-                    <a asp-action="AddToCart" asp-controller="Cart" asp-route-Amount="@item.Price" asp-route-ServiceId="@item.Id" asp-route-PackageId="@item.Id" class="btn btn-primary">Add to Cart</a>
+                    <a asp-action="AddToCart" asp-controller="Cart" asp-route-Amount="@item.Price" asp-route-ServiceId="@item.ServicesId" asp-route-PackageId="@item.Id" class="btn btn-primary">Add to Cart</a>
                 </div>               
             }
         </div>

@@ -1,0 +1,524 @@
+﻿@using AaravEnterprise.Models
+@using AaravEnterprise.DataAccess
+@using AaravEnterprise.Utility;
+@inject ApplicationDbContext dbContext
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="~/assets/images/favicon.ico" />
+    <link rel="icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/critical.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" media="all" />
+    <title>Aarav Web Solution</title>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="~/assets/img/logo.png" alt="" srcset="">
+                </div>
+                <ul role="navigation">
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+        @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
+        {
+<li class="dropdown">
+    <a href="#"><span>Content Management</span> <i class="bi bi-chevron-down"></i></a>
+    <ul>
+        <li>
+            <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
+        </li>
+        <li>
+            <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
+        </li>
+    </ul>
+</li> }
+                else
+                {
+<li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                        <li class="dropdown">
+                                            <a href="#"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
+                                            <ul>
+                                                @foreach (var item in dbContext.Services)
+                                                {
+                            <li>
+                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                            </li>}
+                                            </ul>
+                                        </li>
+                                                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                                                                <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>} }
+                    else
+                    {
+        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                        <li class="dropdown">
+                                            <a href="#"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
+                                            <ul>
+                                                @foreach (var item in dbContext.Services)
+                                                {
+                                <li>
+                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                </li>}
+                                            </ul>
+                                        </li>
+                                                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="wrapper">
+        <section section="banner">
+            <img src="~/assets/img/lady-with-laptop.png" class="vert-move" alt="" srcset="">
+            <div class="hero-content">
+                <h1> Innovative solutions <br>for modern businesses. </h1>
+                <p> We take a holistic approach to online marketing, combining technical expertise with creative thinking to deliver a comprehensive solution that drives results for your business. </p>
+                <a href="" class="cta">Get Started</a>
+            </div>
+        </section>
+        <section section="OurServices">
+            <div class="container">
+                <div class="headings">
+                    <div class="subHeading">Our Services</div>
+                    <h2 class="heading"> Managing your business <br> With our best service </h2>
+                </div>
+                <div class="grid">
+                    <ul role="list">
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-1">
+                                        <img src="~/assets/img/icon-1.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> UI/UX Design </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-2">
+                                        <img src="~/assets/img/icon-2.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> Media Marketing </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-3">
+                                        <img src="~/assets/img/icon-3.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> Content Solution </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-4">
+                                        <img src="~/assets/img/icon-4.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> Web Development </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-5">
+                                        <img src="~/assets/img/icon-5.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> Social Media Management </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="grid-content">
+                                    <div class="icon icon-6">
+                                        <img src="~/assets/img/icon-6.png" alt="" srcset="">
+                                    </div>
+                                    <div class="grid-heading"> Upcoming Services </div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section section="why-choose-us">
+            <div class="container">
+                <div class="flex-wrapper">
+                    <div class="left-col">
+                        <div class="headings">
+                            <h2 class="heading"> Why Choose Us </h2>
+                        </div>
+                        <p> Make a decision that will boost your sales. Tejvir WebSolutions is dedicated to offering an innovative environment, and interactive marketing service to help their clients in achieving their goals. Our three I’d— Interaction, Innovation, and Inspiration; are valued and promoted here as they can make a difference. </p>
+                        <ul class="list">
+                            <li>
+                                <img src="~/assets/img/wcu-1.png" alt="" srcset="">
+                                <div class="list-content">
+                                    <h3>Interaction</h3>
+                                    <p>Interaction is a valuable golden key in our business strategy. We show our gratitude to our clients by providing them with creative solutions to engage with their social brand.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <img src="~/assets/img/wcu-2.png" alt="" srcset="">
+                                <div class="list-content">
+                                    <h3>Innovation</h3>
+                                    <p>Innovation to us means coming up with fresh marketing strategies, concepts, and ideas while also adding value for our clients.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <img src="~/assets/img/wcu-3.png" alt="" srcset="">
+                                <div class="list-content">
+                                    <h3>Inspiration</h3>
+                                    <p>To inspire our clients, we do two things: create and capture a vision. Because, as we all know, positive outcomes are required to create loyalty and commitment, which helps our clients to reach their goals.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="right-col">
+                        <div class="img-wrapper">
+                            <img src="~/assets/img/img-1.png" alt="" srcset="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section section="testimonial">
+            <div class="container">
+                <div class="headings">
+                    <div class="subHeading">Testimonial </div>
+                    <h2 class="heading"> What Do Our Clients Says <br> About Us </h2>
+                </div>
+                <div class="testimonial-wrapper">
+                    <div class="img-wrapper">
+                        <img src="~/assets/img/img-2.png" alt="" srcset="">
+                    </div>
+                    <div class="slider">
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Smit</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Chow</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Smit</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Chow</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Smit</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial-content">
+                                <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                <div class="rating">
+                                    <ul>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                        <li>
+                                            <img src="~/assets/img/star.png" alt="" srcset="">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                <img src="~/assets/img/profile.png" alt="" srcset="">
+                                <div class="profile-details">
+                                    <div class="name">David Chow</div>
+                                    <div class="designation">CTO - Digital Harbor</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <main role="main" class="pb-3"> @RenderBody() </main>
+        </div>
+        <div class="container">
+            <main role="main" class="pb-3">
+                <partial name="_Notification" /> @RenderBody()
+            </main>
+        </div>
+    </main>
+    <footer>
+        <section section="footer">
+            <div class="container">
+                <div class="footer-wrapper">
+                    <div class="about-section">
+                        <img src="~/assets/img/logo.png" class="logo" alt="" srcset="">
+                        <p>Tejvirwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Tejvirwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                        <ul role="list" class="c-main-wrapper">
+                            <li>
+                                <div class="c-heading">Phone: </div>
+                                <div class="c-wrapper">
+                                    <img src="~/assets/img/phone-call.png" class="phone-img" alt="" srcset="">
+                                    <a href="tel:+91 7400041113">+91 7400041113</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="c-heading">Mail: </div>
+                                <div class="c-wrapper">
+                                    <img src="~/assets/img/mail.png" class="mail-img" alt="" srcset="">
+                                    <a href="mailto:support@tejvirwebsolution.com">support@tejvirwebsolution.com</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="c-heading"> Connect With Us </div>
+                                <ul class="social-links">
+                                    <li>
+                                        <a href="">
+                                            <img src="~/assets/img/twiter.png" alt="" srcset="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="">
+                                            <img src="~/assets/img/instagram.png" alt="" srcset="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="">
+                                            <img src="~/assets/img/facebook.png" alt="" srcset="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="">
+                                            <img src="~/assets/img/linkedin.png" alt="" srcset="">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <ul role="list">
+                            <li>
+                                <a href="">Useful Links</a>
+                            </li>
+                            <li>
+                                <a href="">Home</a>
+                            </li>
+                            <li>
+                                <a href=""> About us </a>
+                            </li>
+                            <li>
+                                <a href="">Contact</a>
+                            </li>
+                            <li>
+                                <a href="">Shipping Policy</a>
+                            </li>
+                            <li>
+                                <a href="">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="">Refund policy</a>
+                            </li>
+                            <li>
+                                <a href="">Terms and Conditions</a>
+                            </li>
+                        </ul>
+                        <ul role="list">
+                            <li>
+                                <a href=""> Our Services </a>
+                            </li>
+                            <li>
+                                <a href="">UI/UX Design</a>
+                            </li>
+                            <li>
+                                <a href="">Media Marketing</a>
+                            </li>
+                            <li>
+                                <a href=""> Content Solution </a>
+                            </li>
+                            <li>
+                                <a href="">Web Development</a>
+                            </li>
+                            <li>
+                                <a href="">Social Media Management</a>
+                            </li>
+                            <li>
+                                <a href="">Upcoming Services</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <div class="container"> © Copyright 2023 Tejvirwebsolution. All Rights Reserved </div>
+            </div>
+        </section>
+    </footer>
+    <script src="~/assets/build/common.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

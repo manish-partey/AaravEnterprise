@@ -18,7 +18,7 @@ namespace AaravEnterprise.Controllers
 
             var objPackages = _dbContext.Package.Where(s => s.ServicesId == Id).ToList();
             ViewBag.Packages = objPackages;
-
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -20,44 +21,52 @@ namespace AaravEnterprise.Controllers
 
         public IActionResult Index()
         {
-           
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
 
         public IActionResult About()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
 
         public IActionResult Contact()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
 
         public IActionResult Service()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
 
         public IActionResult Shipping()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
         public IActionResult Privacy()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
         public IActionResult Refund()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
         public IActionResult TermsAndCondition()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

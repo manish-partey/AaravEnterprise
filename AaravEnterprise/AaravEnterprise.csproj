@@ -20,6 +20,56 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\assets\build\common.js" />
+    <None Include="wwwroot\assets\build\front.js" />
+    <None Include="wwwroot\assets\build\inner.js" />
+    <None Include="wwwroot\assets\fonts\fa\fontawesome-webfont.svg" />
+    <None Include="wwwroot\assets\fonts\fa\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\assets\img\bg.svg" />
+    <None Include="wwwroot\assets\img\wave.svg" />
+    <None Include="wwwroot\assets\js\common.js" />
+    <None Include="wwwroot\assets\js\custom\front.js" />
+    <None Include="wwwroot\assets\js\custom\inner.js" />
+    <None Include="wwwroot\assets\js\lib\jquery.min.js" />
+    <None Include="wwwroot\assets\js\lib\slick.min.js" />
+    <None Include="wwwroot\assets\scss\animations.scss" />
+    <None Include="wwwroot\assets\scss\colors.scss" />
+    <None Include="wwwroot\assets\scss\components.scss" />
+    <None Include="wwwroot\assets\scss\critical.scss" />
+    <None Include="wwwroot\assets\scss\font-size.scss" />
+    <None Include="wwwroot\assets\scss\fonts.scss" />
+    <None Include="wwwroot\assets\scss\footer.scss" />
+    <None Include="wwwroot\assets\scss\functions.scss" />
+    <None Include="wwwroot\assets\scss\global.scss" />
+    <None Include="wwwroot\assets\scss\homePage\section-1.scss" />
+    <None Include="wwwroot\assets\scss\homePage\sections.scss" />
+    <None Include="wwwroot\assets\scss\lib.scss" />
+    <None Include="wwwroot\assets\scss\lib\fa.scss" />
+    <None Include="wwwroot\assets\scss\lib\slick.scss" />
+    <None Include="wwwroot\assets\scss\max.scss" />
+    <None Include="wwwroot\assets\scss\max\1024.scss" />
+    <None Include="wwwroot\assets\scss\max\1280.scss" />
+    <None Include="wwwroot\assets\scss\max\1366.scss" />
+    <None Include="wwwroot\assets\scss\max\1440.scss" />
+    <None Include="wwwroot\assets\scss\max\320.scss" />
+    <None Include="wwwroot\assets\scss\max\360.scss" />
+    <None Include="wwwroot\assets\scss\max\480.scss" />
+    <None Include="wwwroot\assets\scss\max\540.scss" />
+    <None Include="wwwroot\assets\scss\max\768.scss" />
+    <None Include="wwwroot\assets\scss\min.scss" />
+    <None Include="wwwroot\assets\scss\min\1366.scss" />
+    <None Include="wwwroot\assets\scss\min\1440.scss" />
+    <None Include="wwwroot\assets\scss\min\1600.scss" />
+    <None Include="wwwroot\assets\scss\min\1680.scss" />
+    <None Include="wwwroot\assets\scss\min\1920.scss" />
+    <None Include="wwwroot\assets\scss\mixins.scss" />
+    <None Include="wwwroot\assets\scss\pages\pages.scss" />
+    <None Include="wwwroot\assets\scss\reset.scss" />
+    <None Include="wwwroot\assets\scss\style.scss" />
+    <None Include="wwwroot\assets\scss\variables.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.32" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" />

@@ -1,0 +1,22 @@
+/* SCSS includes */
+@import 'reset';
+@import 'variables';
+@import 'colors';
+@import 'functions';
+@import 'mixins';
+@import 'font-size';
+
+@import 'fonts';
+@import 'lib';
+@import 'animations';
+
+
+
+@import 'global';
+@import 'components';
+@import 'homePage/sections';
+@import 'footer';
+@import 'pages/pages';
+@import 'price-card';
+@import 'min';
+@import 'max';

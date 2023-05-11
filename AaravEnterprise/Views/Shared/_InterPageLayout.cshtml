@@ -25,54 +25,34 @@
                 <div class="logo">
                     <img src="~/assets/img/logo.png" alt="" srcset="">
                 </div>
-                <ul role="navigation">
-                    @if (Context.User.Identity.IsAuthenticated)
-                    {
-        @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
-        {
-<li class="dropdown">
-    <a href="#"><span>Content Management</span> <i class="bi bi-chevron-down"></i></a>
-    <ul>
-        <li>
-            <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
-        </li>
-        <li>
-            <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
-        </li>
-    </ul>
-</li> }
-                else
-                {
-<li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="Home" asp-action="About">About</a></li>
-                                        <li class="dropdown">
-                                            <a href="#"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
-                                            <ul>
-                                                @foreach (var item in dbContext.Services)
-                                                {
-                            <li>
-                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                            </li>}
-                                            </ul>
-                                        </li>
-                                                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                                                                                <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>} }
-                    else
-                    {
-        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+
+                <img src="~/assets/img/menu.png" class="menu-icon" alt="" srcset="">
+
+                <div class="navigation-wrapper">
+                    <ul role="navigation">
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                         <li><a asp-controller="Home" asp-action="About">About</a></li>
-                                        <li class="dropdown">
-                                            <a href="#"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
-                                            <ul>
-                                                @foreach (var item in dbContext.Services)
-                                                {
-                                <li>
-                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                </li>}
-                                            </ul>
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropbtn">Services </a>
+                            <div class="dropdown-content">
+                                <ul role="list">
+                                    @foreach (var item in dbContext.Services)
+                                    {
+                                        <li>
+                                            <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
                                         </li>
-                                                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>}
-                </ul>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                        <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
+                        <li>
+                            <partial name="_LoginPartial" />
+                        </li>
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle"></i>
+                </div>
             </nav>
         </div>
     </header>

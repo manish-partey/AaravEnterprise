@@ -29,12 +29,14 @@ namespace AaravEnterprise.Controllers
                             Price = t1.Price
                         };
             var result = query.ToList();
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(result);           
         }
         public IActionResult Create()
         {
             var services = _dbContext.Services.ToList();
             ViewBag.Services = new SelectList(services, "Id", "ServiceTitle");
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
 
@@ -62,6 +64,7 @@ namespace AaravEnterprise.Controllers
             {
                 return NotFound();
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(serviceFromDb);
         }
 
@@ -97,6 +100,7 @@ namespace AaravEnterprise.Controllers
             {
                 return NotFound();
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(packagesFromDb);
         }
         [HttpPost]

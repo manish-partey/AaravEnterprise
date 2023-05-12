@@ -11,10 +11,10 @@
     z-index: 1;
     background: #FFFFFF;
     max-width: 360px;
-    margin: 0 auto 100px;
-    padding: 45px;
+    margin: 0 auto 10px;
+    padding: 25px;
     text-align: center;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.24);
 }
 
     .form input {
@@ -64,9 +64,9 @@
     }
 
 .container {
-    position: relative;
-    z-index: 1;
-    max-width: 300px;
+  
+  
+   
     margin: 0 auto;
 }
 
@@ -103,11 +103,4 @@
                 color: #EF3B3A;
             }
 
-body {
-    background: #76b852; /* fallback for old browsers */
-    background: rgb(141,194,111);
-    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
-    font-family: "Roboto", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+

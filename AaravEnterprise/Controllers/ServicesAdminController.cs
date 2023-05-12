@@ -17,11 +17,13 @@ namespace AaravEnterprise.Controllers
         public IActionResult Index()
         {
             List<Services> objCategoryList = _dbContext.Services.ToList();
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(objCategoryList);
         }
 
         public IActionResult Create()
         {
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
 
@@ -35,6 +37,7 @@ namespace AaravEnterprise.Controllers
                 TempData["success"] = "Service created successfully";
                 return RedirectToAction("Index");
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
 
@@ -50,6 +53,7 @@ namespace AaravEnterprise.Controllers
             {
                 return NotFound();
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(serviceFromDb);
         }
 
@@ -84,6 +88,7 @@ namespace AaravEnterprise.Controllers
             {
                 return NotFound();
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(serviceFromDb);
         }
         [HttpPost]
@@ -96,6 +101,7 @@ namespace AaravEnterprise.Controllers
                 TempData["success"] = "Service updated successfully";
                 return RedirectToAction("Index");
             }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
 
         }

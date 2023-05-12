@@ -29,23 +29,64 @@
 
                 <div class="navigation-wrapper">
                     <ul role="navigation">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About">About</a></li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0)" class="dropbtn">Services </a>
-                            <div class="dropdown-content">
-                                <ul role="list">
-                                    @foreach (var item in dbContext.Services)
-                                    {
-                                        <li>
-                                            <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </li>
-                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                        <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
+                            {
+                                <li class="dropdown">
+                                    <a href="javascript:void(0)" class="dropbtn">Content Management</a>
+                                    <div class="dropdown-content">
+                                        <ul role="list">
+                                            <li>
+                                                <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0)" class="dropbtn">Services </a>
+                                    <div class="dropdown-content">
+                                        <ul role="list">
+                                            @foreach (var item in dbContext.Services)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a asp-controller="Home" asp-action="About">About</a></li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0)" class="dropbtn">Services </a>
+                                <div class="dropdown-content">
+                                    <ul role="list">
+                                        @foreach (var item in dbContext.Services)
+                                        {
+                                            <li>
+                                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>                            
+                        }
                         <li>
                             <partial name="_LoginPartial" />
                         </li>
@@ -166,36 +207,32 @@
                         </ul>
                     </div>
                     <div class="footer-links">
+
                         <ul role="list">
                             <li><a href="">Useful Links</a></li>
-                            <li><a href="">Home</a></li>
+                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                             <li>
-                                <a href="">
-                                    About us
-                                </a>
+                                <a asp-controller="Home" asp-action="About">About Us</a>
                             </li>
-                            <li><a href="">Contact</a></li>
-                            <li><a href="">Shipping Policy</a></li>
-                            <li><a href="">Privacy Policy</a></li>
-                            <li><a href="">Refund policy</a></li>
-                            <li><a href="">Terms and Conditions</a></li>
+                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                            <li><a asp-controller="Home" asp-action="Shipping">Shipping Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="Refund">Refund Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="TermsAndCondition">Terms and Conditions</a></li>
                         </ul>
+
                         <ul role="list">
                             <li>
                                 <a href="">
                                     Our Services
                                 </a>
                             </li>
-                            <li><a href="">UI/UX Design</a></li>
-                            <li><a href="">Media Marketing</a></li>
-                            <li>
-                                <a href="">
-                                    Content Solution
-                                </a>
-                            </li>
-                            <li><a href="">Web Development</a></li>
-                            <li><a href="">Social Media Management</a></li>
-                            <li><a href="">Upcoming Services</a></li>
+                            @foreach (var item in dbContext.Services)
+                            {
+                                <li>
+                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>

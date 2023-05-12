@@ -27,13 +27,13 @@ namespace AaravEnterprise.Controllers
 
         public IActionResult About()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
 
         public IActionResult Contact()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
 
@@ -45,28 +45,28 @@ namespace AaravEnterprise.Controllers
 
         public IActionResult Shipping()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
         public IActionResult Privacy()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
         public IActionResult Refund()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
         public IActionResult TermsAndCondition()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "Home";
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

@@ -12,69 +12,74 @@
     var userId = user?.Id;
     var userPhone = user?.PhoneNumber;
 }
-<h1>Cart</h1>
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-sm-6">
-                    <h6 class="mb-3">
-                        <strong>Confirm Your Details</strong>
-                    </h6>
-                    <div></div>
-                    <div>Name: @userName</div>
-                    <div>Email: @userEmail</div>
-                    <div>Phone: @userPhone</div>
-                </div>
-            </div>
-            <div id="error"></div>
-            <div class="table-responsive-sm">
-                <table class="table table-striped">
-                    <thead class="bg-blue-200 text-white">
-                        <tr>
-                            <th class="center table-heading">No.</th>
-                            <th class="table-heading">Service Name</th>
-                            <th class="table-heading">Package Selected</th>
-                            <th class="center table-heading"> Amount </th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr id="rm1">
-                                <td class="center"> @item.CartId</td>
-                                <td class="left strong">@item.ServiceTitle</td>
-                                <td class="left">@item.PackageTitle</td>
-                                <td class="center"> @item.Amount </td>
-                                <input type="hidden" name="prodid[]" value="" />
-                                <input type="hidden" name="price[]" value="369">
-                                <input type="hidden" name="qty[]" value="1">
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="row">
-                    <div class="col-lg-12 col-sm-12">
-                        <table class="table table-clear" style="background-color: #1f4fad;color:#fff">
-                            <tbody>
-                                <tr>
-                                    <td class="" style="text-align: right;">
-                                        <strong>Total Amount Payble</strong>
-                                    </td>
-                                    <td class="right text-success total-pay">
-                                        <strong>$@ViewBag.Total.ToString()</strong>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Checkout</h2>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <h6 class="mb-3">
+                            <strong>Confirm Your Details</strong>
+                        </h6>
+                        <div></div>
+                        <div>Name: @userName</div>
+                        <div>Email: @userEmail</div>
+                        <div>Phone: @userPhone</div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-4"></div>
-                    <div class="col-lg-4 col-sm-4"></div>
-                    <div class="col-lg-4 col-sm-4">
-                        <div><a asp-action="Paypalvtwo" asp-controller="PaypalPayment"><img style="height:80px;width:250px;" src="~/images/paypal.png" /></a></div>
+                <div id="error"></div>
+                <div class="table-responsive-sm">
+                    <table class="table table-striped">
+                        <thead class="bg-blue-200 text-white">
+                            <tr>
+                                <th class="center table-heading">No.</th>
+                                <th class="table-heading">Service Name</th>
+                                <th class="table-heading">Package Selected</th>
+                                <th class="center table-heading"> Amount </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="rm1">
+                                    <td class="center"> @item.CartId</td>
+                                    <td class="left strong">@item.ServiceTitle</td>
+                                    <td class="left">@item.PackageTitle</td>
+                                    <td class="center"> @item.Amount </td>
+                                    <input type="hidden" name="prodid[]" value="" />
+                                    <input type="hidden" name="price[]" value="369">
+                                    <input type="hidden" name="qty[]" value="1">
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <table class="table table-clear" style="background-color: #1f4fad;color:#fff">
+                                <tbody>
+                                    <tr>
+                                        <td class="" style="text-align: right;">
+                                            <strong>Total Amount Payble</strong>
+                                        </td>
+                                        <td class="right text-success total-pay">
+                                            <strong>$@ViewBag.Total.ToString()</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-4"></div>
+                        <div class="col-lg-4 col-sm-4"></div>
+                        <div class="col-lg-4 col-sm-4">
+                            <div><a asp-action="Paypalvtwo" asp-controller="PaypalPayment"><img style="height:80px;width:250px;" src="~/images/paypal.png" /></a></div>
+                        </div>
                     </div>
                 </div>
             </div>

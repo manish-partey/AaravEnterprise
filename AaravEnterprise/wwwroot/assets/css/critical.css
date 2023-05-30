@@ -159,6 +159,21 @@ table > thead {
     transition: 0.3s;
 }
 
+.checkout-btn {
+    background: #1f4fad;
+    color:white;
+    border-radius: 50px;
+    padding: 5px 50px;
+    cursor:pointer;
+}
+
+.payment-checkout-text {
+    float: right;
+    padding-right: 12px;
+    font-size: 18px;
+    color: #009900aa;
+}
+
 /* Responcive css Start */
 
 @media (max-width: 991px) {

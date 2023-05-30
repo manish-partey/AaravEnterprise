@@ -1,79 +1,65 @@
 ﻿@using AaravEnterprise.Models
 @using AaravEnterprise.DataAccess
 @using AaravEnterprise.Utility;
+@{  
+    var actionName = ViewContext.ActionDescriptor.DisplayName;
+}
 @inject ApplicationDbContext dbContext
-    <!doctype html>
-    <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-    <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-    <!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
-    <!--[if gt IE 8]><!-->
-    <html class="no-js" lang="en">
-    <!--<![endif]-->
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="apple-touch-icon" href="~/assets/images/favicon.ico" />
-        <link rel="icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="~/assets/css/critical.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-icons.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-min.css" media="all" />
-        <title>Aarav Web Solution</title>
-    </head>
-    <body>
-        <header>
-            <div class="container">
-                <nav>
-                    <div class="logo">
-                        <img src="~/assets/img/logo.png" alt="" srcset="">
-                    </div>
-                    <img src="~/assets/img/menu.png" class="menu-icon" alt="" srcset="">
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="~/assets/images/favicon.ico" />
+    <link rel="icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.min.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/critical.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-icons.css" media="all" />
+    <title>Aarav Web Solution</title>
+    <script src="~/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-                    <div class="navigation-wrapper">
-                        <ul role="navigation">
-                            @if (Context.User.Identity.IsAuthenticated)
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="~/assets/img/logo.png" alt="" srcset="">
+                </div>
+                <img src="~/assets/img/menu.png" class="menu-icon" alt="" srcset="">
+
+                <div class="navigation-wrapper">
+                    <ul role="navigation">
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
                             {
-                                @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
-                                {
-                                    <li class="dropdown">
-                                        <a href="javascript:void(0)" class="dropbtn">Content Management</a>
-                                        <div class="dropdown-content">
-                                            <ul role="list">
-                                                <li>
-                                                    <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
-                                                </li>
-                                                <li>
-                                                    <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                    <li><a asp-controller="Home" asp-action="About">About</a></li>
-                                    <li class="dropdown">
-                                        <a href="javascript:void(0)" class="dropbtn">Services </a>
-                                        <div class="dropdown-content">
-                                            <ul role="list">
-                                                @foreach (var item in dbContext.Services)
-                                                {
-                                                    <li>
-                                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                                    <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
-                                }
+                                <li class="dropdown">
+                                    <a href="javascript:void(0)" class="dropbtn">Content Management</a>
+                                    <div class="dropdown-content">
+                                        <ul role="list">
+                                            <li>
+                                                <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
                             }
                             else
                             {
@@ -93,168 +79,247 @@
                                     </div>
                                 </li>
                                 <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-
+                                <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
                             }
+                        }
+                        else
+                        {
+                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a asp-controller="Home" asp-action="About">About</a></li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0)" class="dropbtn">Services </a>
+                                <div class="dropdown-content">
+                                    <ul role="list">
+                                        @foreach (var item in dbContext.Services)
+                                        {
+                                            <li>
+                                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+
+                        }
+                        <li>
+                            <partial name="_LoginPartial" />
+                        </li>
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="wrapper">
+        <div class="inner-page">
+            <div class="inner-banner">
+                <picture><source media="(max-width: 540px)" srcset="~/assets/img/inner-bg.png"><img src="~/assets/img/inner-bg.png"></picture>
+            </div>
+                    @if (@actionName == "AaravEnterprise.Controllers.HomeController.Contact (AaravEnterprise)")
+                    {
+                        <section class="contact-sec sec-pad">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="custom-msg">
+                                        <div class="headings">
+                                            <h2 class="heading">
+                                                Want Customize plan according to your need?
+                                            </h2>
+                                        </div>
+                                        <p>You can also get your plan according to your customization. Please fill the form below and we will get back to you soon.</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="contact-detail">
+                                                <ul class="contact-ul">
+                                                    <li><i class="fa fa-location-dot"></i> 91, Ram Nagar, Ram Mandir, Delhi</li>
+                                                    <li>
+                                                        <i class="fa fa-phone"></i>
+                                                        <a href="tel:08510004495">0255000XXXX</a>,
+                                                        <a href="tel:08510005495">0251600XXXX</a>
+                                                    </li>
+                                                    <li>
+                                                        <i class="fa-solid fa-envelope"></i>
+                                                        <a href="mailto:pardeepkumar4bjp@gmail.com"> demounknown@gmail.com</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <form action="#" class="contFrm" method="POST">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <input type="text" name="name" placeholder="Your Name" class="inptFld" required />
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="email" name="email" placeholder="Email Address" class="inptFld" required />
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <input type="text" name="sub" placeholder="Subject" class="inptFld" required />
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <textarea class="inptFld" rows="" cols="" placeholder="Your Message..." required></textarea>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <input type="submit" name="submit" value="SUBMIT" class="inptBtn" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+        <section section="inner">
+            @RenderBody()
+
+            <div class="tabs-main">
+                <div class="container">
+                    <div class="tab-wrapper">
+                        <ul class="tabs">
+                            <li class="tab-link active " data-tab="1">Graphic designing </li>
+                            <li class="tab-link" data-tab="2">Mobile app Wireframing</li>
+                            <li class="tab-link" data-tab="3">Web Development with UI/UX perspective </li>
+                            <li class="tab-link" data-tab="4">Website mock-ups </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content-wrapper">
+                        <div id="tab-1" class="tab-content active">
+                            <p>Do you envision visually appealing advertisements when you think of the graphic design? An eye-catching website layout, or stunningly designed magazine covers?</p>
+                            <p>Although these examples undoubtedly fall within the term graphic designing, it encompasses much more. So, what exactly is graphic design? In our opinion, graphic designing is simply bringing a visual picture to life.</p>
+                            <p>At Aaravwebsolution we have the best and most excellent graphic designing creative heads on board. For our consumers, we create engaging and user-friendly web pages and website layouts. Posters, logos, infographics, business cards, book covers, mobile apps, software interfaces, and product labels the list is endless.</p>
+                        </div>
+                        <div id="tab-2" class="tab-content ">
+                            <p>Wireframing is an important step in the development of a mobile app. It serves as visual assistance, providing the overall design of the app. It also shows features and functionality and highlights important steps in the user journey.</p>
+                            <p>Thus, when we create a mobile app for you, we make sure to provide the best layout experiences possible. We offer wireframing services that include creative Page elements, effective content, and navigation area.</p>
+                            <p>These ensure how the application will benefit your audience. We illustrate each step of the customer's journey within your app to identify potential roadblocks before development begins.</p>
+                        </div>
+                        <div id="tab-3" class="tab-content ">
+                            <p>Does the creation of UI/UX websites differ from the development of traditional websites? Yes, it is. If you want a successful website, you might need to build it from a user interface and user experience perspective.</p>
+                            <p>Thus, we at Aaravwebsolution allow our customers to have their websites developed from a UI standpoint. We do this by speeding up the web content's loading time and attempting better file compression to make the content's file sizes smaller. For users to interact with the interface easily, we make sure that the controls are as responsive as possible.</p>
+                        </div>
+                        <div id="tab-4" class="tab-content ">
+                            <p></p>While we are discussing the world of website designing and development, Mockups are one the most important things that come into consideration. </p>
+                            <p>If you're new to this, website mockups function by fusing the logic and structure of a wireframe with the graphics, images, and user interface elements that are the final result of the website.</p>
+                            <p>Similar to this, while developing your website, we use mockup tools to decide on information architecture, increased user interactions, and creative visuals for a better user experience.</p>
+                            <p>In short, before the coding begins, use our website mockups to help you identify the key components of your website.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (@actionName != "AaravEnterprise.Controllers.HomeController.Contact (AaravEnterprise)")
+            {
+                <div class="customize">
+                    <div class="container">
+                        <div class="customize-wrapper">
+                            <div class="custom-msg">
+                                <div class="headings">
+                                    <h2 class="heading"> Want Customize plan according to your need? </h2>
+                                </div>
+                                <p>You can also get your plan according to your customization. Please fill the form below and we will get back to you soon.</p>
+                            </div>
+                            <div class="form-section">
+                                <form action="">
+                                    <input type="text" name="name" id="" placeholder="Name">
+                                    <input type="email" name="email" id="" placeholder="Email">
+                                    <input type="number" name="phone" id="" placeholder="Mobile No.">
+                                    <textarea name="message" id="" cols="30" rows="7" placeholder="Message"></textarea>
+                                    <button type="submit" class="cta">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </section>
+        </div>
+    </main>
+    <footer>
+        <section section="footer">
+            <div class="container">
+                <div class="footer-wrapper">
+                    <div class="about-section">
+                        <img src="~/assets/img/logo.png" class="logo" alt="" srcset="">
+                        <p>
+                            Aaravwebsolution is a digital marketing company that specializes in offering a range of IT
+                            and marketing services around the globe. We are a group of creative thinkers at
+                            Aaravwebsolution who collaborate with customers to create incentives for now and the
+                            future.
+                        </p>
+                        <ul role="list" class="c-main-wrapper">
                             <li>
-                                <partial name="_LoginPartial" />
+                                <div class="c-heading">Phone: </div>
+                                <div class="c-wrapper">
+                                    <img src="~/assets/img/phone-call.png" class="phone-img" alt="" srcset="">
+                                    <a href="tel:+91 7400041113">+91 7400041113</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="c-heading">Mail: </div>
+                                <div class="c-wrapper">
+                                    <img src="~/assets/img/mail.png" class="mail-img" alt="" srcset="">
+                                    <a href="mailto:support@araventerprise.com">support@araventerprise.com</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="c-heading">
+                                    Connect With Us
+                                </div>
+                                <ul class="social-links">
+                                    <li><a href=""><img src="~/assets/img/twiter.png" alt="" srcset=""></a></li>
+                                    <li><a href=""><img src="~/assets/img/instagram.png" alt="" srcset=""></a></li>
+                                    <li><a href=""><img src="~/assets/img/facebook.png" alt="" srcset=""></a></li>
+                                    <li><a href=""><img src="~/assets/img/linkedin.png" alt="" srcset=""></a></li>
+                                </ul>
                             </li>
                         </ul>
-                        <i class="bi bi-list mobile-nav-toggle"></i>
                     </div>
-                </nav>
-            </div>
-        </header>
-        <main class="wrapper">
-            <div class="inner-page">
-                <div class="inner-banner">                    
-                    <picture><source media="(max-width: 540px)" srcset="~/assets/img/inner-bg.png"><img src="~/assets/img/inner-bg.png"></picture>
+                    <div class="footer-links">
+
+                        <ul role="list">
+                            <li><a href="">Useful Links</a></li>
+                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li>
+                                <a asp-controller="Home" asp-action="About">About Us</a>
+                            </li>
+                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                            <li><a asp-controller="Home" asp-action="Shipping">Shipping Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="Refund">Refund Policy</a></li>
+                            <li><a asp-controller="Home" asp-action="TermsAndCondition">Terms and Conditions</a></li>
+                        </ul>
+
+                        <ul role="list">
+                            <li>
+                                <a href="">
+                                    Our Services
+                                </a>
+                            </li>
+                            @foreach (var item in dbContext.Services)
+                            {
+                                <li>
+                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
-                <section section="inner">
-                    <div class="container">
-                        @RenderBody()
-                    </div>
-                    <div class="tabs-main">
-                        <div class="container">
-                            <div class="tab-wrapper">
-                                <ul class="tabs">
-                                    <li class="tab-link active " data-tab="1">Graphic designing </li>
-                                    <li class="tab-link" data-tab="2">Mobile app Wireframing</li>
-                                    <li class="tab-link" data-tab="3">Web Development with UI/UX perspective </li>
-                                    <li class="tab-link" data-tab="4">Website mock-ups </li>
-                                </ul>
-                            </div>
-                            <div class="tab-content-wrapper">
-                                <div id="tab-1" class="tab-content active">
-                                    <p>Do you envision visually appealing advertisements when you think of the graphic design? An eye-catching website layout, or stunningly designed magazine covers?</p>
-                                    <p>Although these examples undoubtedly fall within the term graphic designing, it encompasses much more. So, what exactly is graphic design? In our opinion, graphic designing is simply bringing a visual picture to life.</p>
-                                    <p>At Aaravwebsolution we have the best and most excellent graphic designing creative heads on board. For our consumers, we create engaging and user-friendly web pages and website layouts. Posters, logos, infographics, business cards, book covers, mobile apps, software interfaces, and product labels the list is endless.</p>
-                                </div>
-                                <div id="tab-2" class="tab-content ">
-                                    <p>Wireframing is an important step in the development of a mobile app. It serves as visual assistance, providing the overall design of the app. It also shows features and functionality and highlights important steps in the user journey.</p>
-                                    <p>Thus, when we create a mobile app for you, we make sure to provide the best layout experiences possible. We offer wireframing services that include creative Page elements, effective content, and navigation area.</p>
-                                    <p>These ensure how the application will benefit your audience. We illustrate each step of the customer's journey within your app to identify potential roadblocks before development begins.</p>
-                                </div>
-                                <div id="tab-3" class="tab-content ">
-                                    <p>Does the creation of UI/UX websites differ from the development of traditional websites? Yes, it is. If you want a successful website, you might need to build it from a user interface and user experience perspective.</p>
-                                    <p>Thus, we at Aaravwebsolution allow our customers to have their websites developed from a UI standpoint. We do this by speeding up the web content's loading time and attempting better file compression to make the content's file sizes smaller. For users to interact with the interface easily, we make sure that the controls are as responsive as possible.</p>
-                                </div>
-                                <div id="tab-4" class="tab-content ">
-                                    <p></p>While we are discussing the world of website designing and development, Mockups are one the most important things that come into consideration. </p>
-                                    <p>If you're new to this, website mockups function by fusing the logic and structure of a wireframe with the graphics, images, and user interface elements that are the final result of the website.</p>
-                                    <p>Similar to this, while developing your website, we use mockup tools to decide on information architecture, increased user interactions, and creative visuals for a better user experience.</p>
-                                    <p>In short, before the coding begins, use our website mockups to help you identify the key components of your website.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="customize">
-                        <div class="container">
-                            <div class="customize-wrapper">
-                                <div class="custom-msg">
-                                    <div class="headings">
-                                        <h2 class="heading"> Want Customize plan according to your need? </h2>
-                                    </div>
-                                    <p>You can also get your plan according to your customization. Please fill the form below and we will get back to you soon.</p>
-                                </div>
-                                <div class="form-section">
-                                    <form action="">
-                                        <input type="text" name="name" id="" placeholder="Name">
-                                        <input type="email" name="email" id="" placeholder="Email">
-                                        <input type="number" name="phone" id="" placeholder="Mobile No.">
-                                        <textarea name="message" id="" cols="30" rows="7" placeholder="Message"></textarea>
-                                        <button type="submit" class="cta">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
-        </main>
-        <footer>
-            <section section="footer">
+            <div class="copyright">
                 <div class="container">
-                    <div class="footer-wrapper">
-                        <div class="about-section">
-                            <img src="~/assets/img/logo.png" class="logo" alt="" srcset="">
-                            <p>
-                                Aaravwebsolution is a digital marketing company that specializes in offering a range of IT
-                                and marketing services around the globe. We are a group of creative thinkers at
-                                Aaravwebsolution who collaborate with customers to create incentives for now and the
-                                future.
-                            </p>
-                            <ul role="list" class="c-main-wrapper">
-                                <li>
-                                    <div class="c-heading">Phone: </div>
-                                    <div class="c-wrapper">
-                                        <img src="~/assets/img/phone-call.png" class="phone-img" alt="" srcset="">
-                                        <a href="tel:+91 7400041113">+91 7400041113</a>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="c-heading">Mail: </div>
-                                    <div class="c-wrapper">
-                                        <img src="~/assets/img/mail.png" class="mail-img" alt="" srcset="">
-                                        <a href="mailto:support@araventerprise.com">support@araventerprise.com</a>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="c-heading">
-                                        Connect With Us
-                                    </div>
-                                    <ul class="social-links">
-                                        <li><a href=""><img src="~/assets/img/twiter.png" alt="" srcset=""></a></li>
-                                        <li><a href=""><img src="~/assets/img/instagram.png" alt="" srcset=""></a></li>
-                                        <li><a href=""><img src="~/assets/img/facebook.png" alt="" srcset=""></a></li>
-                                        <li><a href=""><img src="~/assets/img/linkedin.png" alt="" srcset=""></a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="footer-links">
-
-                            <ul role="list">
-                                <li><a href="">Useful Links</a></li>
-                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                <li>
-                                    <a asp-controller="Home" asp-action="About">About Us</a>
-                                </li>
-                                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                                <li><a asp-controller="Home" asp-action="Shipping">Shipping Policy</a></li>
-                                <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
-                                <li><a asp-controller="Home" asp-action="Refund">Refund Policy</a></li>
-                                <li><a asp-controller="Home" asp-action="TermsAndCondition">Terms and Conditions</a></li>
-                            </ul>
-
-                            <ul role="list">
-                                <li>
-                                    <a href="">
-                                        Our Services
-                                    </a>
-                                </li>
-                                @foreach (var item in dbContext.Services)
-                                {
-                                    <li>
-                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
+                    © Copyright 2023 Aaravwebsolution. All Rights Reserved
                 </div>
-                <div class="copyright">
-                    <div class="container">
-                        © Copyright 2023 Aaravwebsolution. All Rights Reserved
-                    </div>
-                </div>
-            </section>
-        </footer>
+            </div>
+        </section>
+    </footer>
 
-        <script src="~/assets/build/common.js"></script>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-        <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
-        <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
-    </body>
-    </html>
+    <script src="~/assets/build/common.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

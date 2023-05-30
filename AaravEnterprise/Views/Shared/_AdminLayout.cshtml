@@ -2,196 +2,205 @@
 @using AaravEnterprise.DataAccess
 @using AaravEnterprise.Utility;
 @inject ApplicationDbContext dbContext
-<!doctype html>
-<html class="no-js" lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" href="~/assets/css/login.css" media="all" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" href="~/assets/images/favicon.ico" />
-    <link rel="icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="~/assets/css/critical.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" media="all" />
-    <title>Aarav Web Solution</title>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <img src="~/assets/img/logo.png" alt="" srcset="">
-                </div>
-                <img src="~/assets/img/menu.png" class="menu-icon" alt="" srcset="">
-
-                <div class="navigation-wrapper">
-                    <ul role="navigation">
-                        @if (Context.User.Identity.IsAuthenticated)
-                        {
-                        @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
-                        {
-                        <li class="dropdown">
-                            <a href="javascript:void(0)" class="dropbtn">Content Management</a>
-                            <div class="dropdown-content">
-                                <ul role="list">
-                                    <li>
-                                        <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
-                                    </li>
-                                    <li>
-                                        <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        }
-                        else
-                        {
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About">About</a></li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0)" class="dropbtn">Services </a>
-                            <div class="dropdown-content">
-                                <ul role="list">
-                                    @foreach (var item in dbContext.Services)
-                                    {
-                                    <li>
-                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                    </li>
-                                    }
-                                </ul>
-                            </div>
-                        </li>
-                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                        <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
-                        }
-                        }
-                        else
-                        {
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About">About</a></li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0)" class="dropbtn">Services </a>
-                            <div class="dropdown-content">
-                                <ul role="list">
-                                    @foreach (var item in dbContext.Services)
-                                    {
-                                    <li>
-                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                                    </li>
-                                    }
-                                </ul>
-                            </div>
-                        </li>
-                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                        }
-                        <li>
-                            <partial name="_LoginPartial" />
-                        </li>
-                    </ul>
-                    <i class="bi bi-list mobile-nav-toggle"></i>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <main class="wrapper">
-        <div class="inner-page">
-            <div class="inner-banner">
-                <picture>
-                    <source media="(max-width: 540px)" srcset="~/assets/img/inner-bg-mobile.png">
-                    <img src="~/assets/img//inner-bg.png">
-                </picture>
-            </div>
-            @RenderBody()
-        </div>
-    </main>
-    <footer>
-        <section section="footer">
+    <!doctype html>
+    <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+    <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+    <!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <html class="no-js" lang="en">
+    <!--<![endif]-->
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="apple-touch-icon" href="~/assets/images/favicon.ico" />
+            <link rel="icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+            <link rel="shortcut icon" href="~/assets/images/favicon.ico" type="image/x-icon" />
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+            <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.min.css" media="all" />
+            <link rel="stylesheet" type="text/css" href="~/assets/css/critical.css" media="all" />
+            <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" media="all" />
+            <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-icons.css" media="all" />
+            <title>Aarav Web Solution</title>
+            <script src="~/js/bootstrap.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        </head>
+    <body>
+        <header>
             <div class="container">
-                <div class="footer-wrapper">
-                    <div class="about-section">
-                        <img src="~/assets/img/logo.png" class="logo" alt="" srcset="">
-                        <p>
-                            Aaravwebsolution is a digital marketing company that specializes in offering a range of IT
-                            and marketing services around the globe. We are a group of creative thinkers at
-                            Aaravwebsolution who collaborate with customers to create incentives for now and the
-                            future.
-                        </p>
-                        <ul role="list" class="c-main-wrapper">
-                            <li>
-                                <div class="c-heading">Phone: </div>
-                                <div class="c-wrapper">
-                                    <img src="~/assets/img/phone-call.png" class="phone-img" alt="" srcset="">
-                                    <a href="tel:+91 7400041113">+91 7400041113</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="c-heading">Mail: </div>
-                                <div class="c-wrapper">
-                                    <img src="~/assets/img/mail.png" class="mail-img" alt="" srcset="">
-                                    <a href="mailto:support@araventerprise.com">support@araventerprise.com</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="c-heading">
-                                    Connect With Us
-                                </div>
-                                <ul class="social-links">
-                                    <li><a href=""><img src="~/assets/img/twiter.png" alt="" srcset=""></a></li>
-                                    <li><a href=""><img src="~/assets/img/instagram.png" alt="" srcset=""></a></li>
-                                    <li><a href=""><img src="~/assets/img/facebook.png" alt="" srcset=""></a></li>
-                                    <li><a href=""><img src="~/assets/img/linkedin.png" alt="" srcset=""></a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                <nav>
+                    <div class="logo">
+                        <img src="~/assets/img/logo.png" alt="" srcset="">
                     </div>
-                    <div class="footer-links">
+                    <img src="~/assets/img/menu.png" class="menu-icon" alt="" srcset="">
 
-                        <ul role="list">
-                            <li><a href="">Useful Links</a></li>
-                            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li>
-                                <a asp-controller="Home" asp-action="About">About Us</a>
-                            </li>
-                            <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                            <li><a asp-controller="Home" asp-action="Shipping">Shipping Policy</a></li>
-                            <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
-                            <li><a asp-controller="Home" asp-action="Refund">Refund Policy</a></li>
-                            <li><a asp-controller="Home" asp-action="TermsAndCondition">Terms and Conditions</a></li>
-                        </ul>
-
-                        <ul role="list">
-                            <li>
-                                <a href="">
-                                    Our Services
-                                </a>
-                            </li>
-                            @foreach (var item in dbContext.Services)
+                    <div class="navigation-wrapper">
+                        <ul role="navigation">
+                            @if (Context.User.Identity.IsAuthenticated)
                             {
-                            <li>
-                                <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
-                            </li>
+                                @if (Context.User.HasClaim(c => c.Value == SD.Role_Admin))
+                                {
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0)" class="dropbtn">Content Management</a>
+                                        <div class="dropdown-content">
+                                            <ul role="list">
+                                                <li>
+                                                    <a asp-controller="ServicesAdmin" asp-action="Index">Services</a>
+                                                </li>
+                                                <li>
+                                                    <a asp-controller="PackagesAdmin" asp-action="Index">Packages</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0)" class="dropbtn">Services </a>
+                                        <div class="dropdown-content">
+                                            <ul role="list">
+                                                @foreach (var item in dbContext.Services)
+                                                {
+                                                    <li>
+                                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                    <li><a asp-controller="Cart" asp-action="Index">View Cart</a></li>
+                                }
                             }
+                            else
+                            {
+                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0)" class="dropbtn">Services </a>
+                                    <div class="dropdown-content">
+                                        <ul role="list">
+                                            @foreach (var item in dbContext.Services)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                            }
+                            <li>
+                                <partial name="_LoginPartial" />
+                            </li>
                         </ul>
+                        <i class="bi bi-list mobile-nav-toggle"></i>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="wrapper">
+            <div class="inner-page">
+                <div class="inner-banner">
+                    <picture>
+                        <source media="(max-width: 540px)" srcset="~/assets/img/inner-bg-mobile.png">
+                        <img src="~/assets/img//inner-bg.png">
+                    </picture>
+                </div>
+                @RenderBody()
+            </div>
+        </main>
+        <footer>
+            <section section="footer">
+                <div class="container">
+                    <div class="footer-wrapper">
+                        <div class="about-section">
+                            <img src="~/assets/img/logo.png" class="logo" alt="" srcset="">
+                            <p>
+                                Aaravwebsolution is a digital marketing company that specializes in offering a range of IT
+                                and marketing services around the globe. We are a group of creative thinkers at
+                                Aaravwebsolution who collaborate with customers to create incentives for now and the
+                                future.
+                            </p>
+                            <ul role="list" class="c-main-wrapper">
+                                <li>
+                                    <div class="c-heading">Phone: </div>
+                                    <div class="c-wrapper">
+                                        <img src="~/assets/img/phone-call.png" class="phone-img" alt="" srcset="">
+                                        <a href="tel:+91 7400041113">+91 7400041113</a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="c-heading">Mail: </div>
+                                    <div class="c-wrapper">
+                                        <img src="~/assets/img/mail.png" class="mail-img" alt="" srcset="">
+                                        <a href="mailto:support@araventerprise.com">support@araventerprise.com</a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="c-heading">
+                                        Connect With Us
+                                    </div>
+                                    <ul class="social-links">
+                                        <li><a href=""><img src="~/assets/img/twiter.png" alt="" srcset=""></a></li>
+                                        <li><a href=""><img src="~/assets/img/instagram.png" alt="" srcset=""></a></li>
+                                        <li><a href=""><img src="~/assets/img/facebook.png" alt="" srcset=""></a></li>
+                                        <li><a href=""><img src="~/assets/img/linkedin.png" alt="" srcset=""></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footer-links">
+
+                            <ul role="list">
+                                <li><a href="">Useful Links</a></li>
+                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li>
+                                    <a asp-controller="Home" asp-action="About">About Us</a>
+                                </li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                                <li><a asp-controller="Home" asp-action="Shipping">Shipping Policy</a></li>
+                                <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                                <li><a asp-controller="Home" asp-action="Refund">Refund Policy</a></li>
+                                <li><a asp-controller="Home" asp-action="TermsAndCondition">Terms and Conditions</a></li>
+                            </ul>
+
+                            <ul role="list">
+                                <li>
+                                    <a href="">
+                                        Our Services
+                                    </a>
+                                </li>
+                                @foreach (var item in dbContext.Services)
+                                {
+                                    <li>
+                                        <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">@item.ServiceTitle</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="copyright">
-                <div class="container">
-                    © Copyright 2023 Aaravwebsolution. All Rights Reserved
+                <div class="copyright">
+                    <div class="container">
+                        © Copyright 2023 Aaravwebsolution. All Rights Reserved
+                    </div>
                 </div>
-            </div>
-        </section>
-    </footer>
+            </section>
+        </footer>
 
-    <script src="~/assets/build/common.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
-    <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
-</body>
+        <script src="~/assets/build/common.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
+        <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
+    </body>
 </html>

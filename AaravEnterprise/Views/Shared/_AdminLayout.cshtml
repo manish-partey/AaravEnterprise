@@ -109,12 +109,11 @@
         <main class="wrapper">
             <div class="inner-page">
                 <div class="inner-banner">
-                    <picture>
-                        <source media="(max-width: 540px)" srcset="~/assets/img/inner-bg-mobile.png">
-                        <img src="~/assets/img//inner-bg.png">
-                    </picture>
+                    <picture><source media="(max-width: 540px)" srcset="~/assets/img/inner-bg.png"><img src="~/assets/img/inner-bg.png"></picture>
                 </div>
-                @RenderBody()
+                <section section="inner">
+                    @RenderBody()
+                </section>
             </div>
         </main>
         <footer>

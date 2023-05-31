@@ -4,18 +4,22 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<div class="login-page">
-    <div class="form">
-        <section>
+
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Log in</h2>
+    </div>
+    <div class="row justify-content-sm-center">
+        <div>
             <form id="account" method="post" class="login-form">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form">
                     <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />                    
+                    <input asp-for="Input.Email" class="form-control" />
                 </div>
                 <div class="form">
                     <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />                    
+                    <input asp-for="Input.Password" class="form-control" />
                 </div>
                 <div class="form">
                     <div class="checkbox">
@@ -37,8 +41,8 @@
                     </p>
                 </div>
             </form>
-        </section>
-    </div>    
+        </div>
+    </div>
 </div>
 
 @section Scripts {

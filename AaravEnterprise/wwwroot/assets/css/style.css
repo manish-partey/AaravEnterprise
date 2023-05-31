@@ -2064,6 +2064,13 @@ form .cta {
     border-radius: 5px;
     background-color: #f5f5f5;
 }
+.register-form-outer {
+    width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
 
 .login-form-inner .form-group {
     margin-bottom: 10px;
@@ -2073,7 +2080,9 @@ form .cta {
     font-weight: bold;
     width: 250px;
 }
-
+.admin-form-input {
+    width: 300.33%
+}
 .login-form-inner .form-control {
     width: 100%;
     padding: 5px;
@@ -2086,4 +2095,15 @@ form .cta {
     width: 120px;
     height: 30px;
     font-size: 15px;
+}
+
+.register-button {
+    font-weight: bold;
+    width: 120px;
+    height: 30px;
+    font-size: 15px;
+}
+
+.form-control {
+    font-size: 16px; /* desired font size */
 }

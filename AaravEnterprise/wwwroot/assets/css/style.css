@@ -2104,6 +2104,13 @@ form .cta {
     font-size: 15px;
 }
 
+.admin-create-button {
+    font-weight: bold;
+    width: 350px;
+    height: 35px;
+    font-size: 15px;
+}
+
 .form-control {
     font-size: 16px; /* desired font size */
 }

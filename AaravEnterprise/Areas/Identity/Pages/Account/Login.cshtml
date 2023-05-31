@@ -4,47 +4,35 @@
 @{
     ViewData["Title"] = "Log in";
 }
-
-<div class="container">
-    <div class="headings">
-        <h2 class="heading">Log in</h2>
-    </div>
-    <div class="row justify-content-sm-center">
-        <div>
-            <form id="account" method="post" class="login-form">
+<div class="container h-100">
+    <div class="row justify-content-sm-center h-100">
+        <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+            <div class="headings">
+                <h2 class="heading">Login</h2>
+            </div>
+            <form id="account" method="post" class="login-form-outer">
                 <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form">
+                <div class="login-form-inner">
                     <label asp-for="Input.Email"></label>
                     <input asp-for="Input.Email" class="form-control" />
-                </div>
-                <div class="form">
                     <label asp-for="Input.Password"></label>
                     <input asp-for="Input.Password" class="form-control" />
                 </div>
-                <div class="form">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
+                <div class="login-form-inner">
+                    <button type="submit" class="btn btn-primary ms-auto login-button">Login</button>
+                    <label asp-for="Input.RememberMe">
+                        <input asp-for="Input.RememberMe" /> @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
                 </div>
-                <div class="form">
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div class="form">
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
+                <div class="login-form-inner">
+                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-@section Scripts {
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
 }

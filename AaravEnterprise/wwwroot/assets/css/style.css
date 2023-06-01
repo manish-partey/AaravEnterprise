@@ -2111,6 +2111,27 @@ form .cta {
     font-size: 15px;
 }
 
+.deletelink {
+    transition: color 0.3s ease;
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+    .deletelink:hover {
+        color: red;
+        text-decoration: underline;
+    }
+
+
+.admin-button {
+    font-weight: bold;
+    width: 170px;
+    height: 30px;
+    font-size: 15px;
+}
+
 .form-control {
     font-size: 16px; /* desired font size */
 }

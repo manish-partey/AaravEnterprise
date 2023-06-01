@@ -1,48 +1,54 @@
 ﻿@model Package
-
-<div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Create Package</h2>
-            </div>
-        </div>
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Create Package</h2>
     </div>
-    <div class="card-body p-4">
-       <form method="post" class="row">
-            <div class="border p-3">
-                <div class="form-floating py-2 col-12">                    
-                    <label name="ServicesId" id="ServicesId" class="control-label"></label>
-                    <select name="ServicesId" id="ServicesId" asp-items="@ViewBag.Services" class="form-control"></select>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="PackageTitle" class="form-control border-0 shadow" />
-                    <label asp-for="PackageTitle" class="ms-2"></label>
-                    <span asp-validation-for="PackageTitle" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Price" class="form-control border-0 shadow" />
-                    <label asp-for="Price" class="ms-2"></label>
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-                <div class="py-2 col-12">
-                    <label asp-for="PackageDescription" class="ms-2 text-muted"></label>
-                    <textarea asp-for="PackageDescription" class="form-control border-0 shadow"></textarea>
-                </div>
-                <div class="row pt-2">
-                    <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-primary form-control">Create</button>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <a asp-controller="PackagesAdmin" asp-action="Index" class="btn btn-outline-primary border  form-control">
+    <div class="row">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <td><label name="ServicesId" id="ServicesId" class="ms-2">Service</label></td>
+                    <td><select name="ServicesId" id="ServicesId" asp-items="@ViewBag.Services" class="form-control"></select></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span asp-validation-for="PackageTitle" class="text-danger"></span>
+                        <label asp-for="PackageTitle" class="ms-2"></label>
+                    </td>
+                    <td><input asp-for="PackageTitle" class="form-control border-0 shadow" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                        <label asp-for="Price" class="ms-2"></label>
+                    </td>
+                    <td>
+                        <input asp-for="Price" class="form-control border-0 shadow" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label asp-for="PackageDescription" class="ms-2 text-muted"></label>
+                    </td>
+                    <td>
+                        <textarea asp-for="PackageDescription" class="form-control border-0 shadow"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-primary register-button">Create</button>
+                        <a asp-controller="PackagesAdmin" asp-action="Index" class="btn btn-dange deletelink">
                             Back to List
                         </a>
-                    </div>
-                </div>
-            </div>
-      </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
+
 @section Scripts{
     <script>
         tinymce.init({

@@ -1,31 +1,34 @@
 ﻿@model Package
-<div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Delete Package</h2>
-            </div>
-        </div>
+
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Delete Package</h2>
     </div>
-    <div class="card-body p-4">
+    <div class="row">
         <form method="post">
-            <input asp-for="Id" hidden />
-            <div class="border p-3 mt-4">
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="PackageTitle" disabled class="form-control border-0 shadow" />
-                    <label asp-for="PackageTitle" class="ms-2"></label>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-danger form-control">Delete</button>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <a asp-controller="PackagesAdmin" asp-action="Index" class="btn btn-outline-primary border  form-control">
-                            Back to List
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>
+                            <input asp-for="Id" hidden />
+                            
+                            <label asp-for="PackageTitle" class="ms-2"></label>
+                        </td>
+                        <td><input asp-for="PackageTitle" disabled class="form-control border-0 shadow" /></td>
+                    </tr>
+                   
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-danger register-button">Delete</button>
+                            <a asp-controller="PackagesAdmin" asp-action="Index" class="btn btn-dange deletelink">
+                                Back to List
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </form>
     </div>
 </div>

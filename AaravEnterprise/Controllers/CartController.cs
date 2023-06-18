@@ -44,7 +44,7 @@ namespace AaravEnterprise.Controllers
                 var cart = query.ToList();
                 var total = query.Sum(p => p.Amount);
                 ViewBag.Total = total;
-                ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";                
+                ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
                 return View(cart);
             }    
         }

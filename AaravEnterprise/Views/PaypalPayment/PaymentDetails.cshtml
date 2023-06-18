@@ -1,0 +1,21 @@
+﻿@model List<string>
+
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Payment Detail</h2>
+    </div>
+</div>
+<div class="row justify-content-sm-center h-100">
+    <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+        <table class="table table-striped">
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+</div>

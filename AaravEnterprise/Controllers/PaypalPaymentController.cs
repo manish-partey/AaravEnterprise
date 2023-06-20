@@ -66,7 +66,8 @@ namespace AaravEnterprise.Controllers
                 {
                     //redirect URL. when approved or cancelled on PayPal, PayPal uses this URL to redirect to your app/website.
                     payPalSetup.RedirectUrl = Request.Scheme + "://" + Request.Host + "/PaypalPayment/Paypalvtwo?";
-                    PayPalHttp.HttpResponse response = await MyPaypalPayment.createOrder(payPalSetup);
+                    MyPaypalPayment myPaypalPayment = new MyPaypalPayment();
+                    PayPalHttp.HttpResponse response = await myPaypalPayment.createOrder(payPalSetup);
 
                     var statusCode = response.StatusCode;
                     Order result = response.Result<Order>();
@@ -169,7 +170,7 @@ namespace AaravEnterprise.Controllers
             //### Creating an Order
             //This will create an order and print order id for the created order
 
-            public async static Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup)
+            public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup)
             {
                 PayPalHttp.HttpResponse response = null;
 

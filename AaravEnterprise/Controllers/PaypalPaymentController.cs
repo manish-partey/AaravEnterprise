@@ -98,9 +98,9 @@ namespace AaravEnterprise.Controllers
             else
             {
                 #region order_execution
-
+                MyPaypalPayment myPaypalPayment = new MyPaypalPayment();
                 //this is where actual transaction is carried out
-                PayPalHttp.HttpResponse response = await MyPaypalPayment.captureOrder(payPalSetup);
+                PayPalHttp.HttpResponse response = await myPaypalPayment.captureOrder(payPalSetup);
                 try
                 {
                     var statusCode = response.StatusCode;
@@ -146,7 +146,7 @@ namespace AaravEnterprise.Controllers
             /// </summary>
             /// <param name="paypalEnvironment">provide value sandbox for testing,  provide value live for live environments</param>            
             /// <returns>PayPalHttp.HttpClient</returns>
-            public static PayPalHttpClient client(MyPaypalSetup paypalEnvironment)
+            public PayPalHttpClient client(MyPaypalSetup paypalEnvironment)
             {
                 PayPalEnvironment environment = null;
 
@@ -267,7 +267,7 @@ namespace AaravEnterprise.Controllers
             //### Capturing an Order
             //Before capturing an order, order should be approved by the buyer using the approve link in create order response
 
-            public async static Task<PayPalHttp.HttpResponse> captureOrder(MyPaypalSetup paypalSetup)
+            public async Task<PayPalHttp.HttpResponse> captureOrder(MyPaypalSetup paypalSetup)
             {
                 // Construct a request object and set desired parameters
                 // Replace ORDER-ID with the approved order id from create order

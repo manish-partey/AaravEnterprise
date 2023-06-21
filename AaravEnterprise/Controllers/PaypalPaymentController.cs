@@ -1,6 +1,7 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using AaravEnterprise.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PayPalCheckoutSdk.Core;
@@ -12,9 +13,9 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-
 namespace AaravEnterprise.Controllers
 {
+    [Authorize]
     public class PaypalPaymentController : Controller
     {        
         public IConfiguration Configuration { get; }
@@ -24,8 +25,6 @@ namespace AaravEnterprise.Controllers
         {
             Configuration = configuration;
             _dbContext = dbContext;
-
-           
         }
         
         public ActionResult Index()
@@ -38,7 +37,6 @@ namespace AaravEnterprise.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
 
             var query = from C in _dbContext.Cart
                         join S in _dbContext.Services on C.ServiceId equals S.Id
@@ -54,21 +52,15 @@ namespace AaravEnterprise.Controllers
             ViewBag.CartItemsForUser = query.ToList();
             var total = query.Sum(p => p.Amount);
             ViewBag.Total = total;
-            #region local_variables
-            Configuration.GetConnectionString("AppDBConnectionString");
-            //setup paypal environment to save some essential varaibles
 
+            #region local_variables
             MyPaypalPayment.MyPaypalSetup payPalSetup
                 = new MyPaypalPayment.MyPaypalSetup { Environment = Configuration.GetSection("PayPal:Mode").Value.ToString(), ClientId = Configuration.GetSection("PayPal:ClientId").Value.ToString(), Secret = Configuration.GetSection("PayPal:Secret").Value.ToString() };
-
-            //a list if string to collect messages to be displayed to the payer
+            
             List<string> paymentResultList = new List<string>();
-
             #endregion
 
-            #region check_payment_cancellation
-
-            //check if payer has cancelled the transaction, if yes, do nothing. Let the payer know about his actions
+            #region check_payment_cancellation            
             if (!string.IsNullOrEmpty(Cancel) && Cancel.Trim().ToLower() == "true")
             {
                 paymentResultList.Add("You cancelled the transaction.");
@@ -87,7 +79,6 @@ namespace AaravEnterprise.Controllers
                 #region order_creation
                 //Create order and display it to the payer to approve. 
                 //This is the first PayPal screen where payer signin using his PayPal credentials
-
                 try
                 {
                     //redirect URL. when approved or cancelled on PayPal, PayPal uses this URL to redirect to your app/website.
@@ -169,7 +160,7 @@ namespace AaravEnterprise.Controllers
         /// </summary>
         public class MyPaypalPayment
         {
-            List<CartViewModel> cartViewModels1;
+            List<CartViewModel> cartItemList;
             /// <summary>
             /// Initiates Paypal client. Must ensure correct environment.
             /// </summary>
@@ -202,16 +193,15 @@ namespace AaravEnterprise.Controllers
             public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup, List<CartViewModel> cartViewModels, string orderTotal)
             {
                 PayPalHttp.HttpResponse response = null;
-                cartViewModels1 = cartViewModels;
-
+                cartItemList = cartViewModels;
                 var itemList = new List<Item>();
-                foreach (var cartItem in cartViewModels1)
+                foreach (var cartItem in cartItemList)
                 {
                     itemList.Add(new Item
                     {
                         Quantity = "1",
-                        Name = "Shirt",
-                        Description = "Order Details",
+                        Name = cartItem.PackageTitle,
+                        Description = cartItem.ServiceTitle,
                         Sku = "sku",
                         Tax = new Money() { CurrencyCode = "USD", Value = "0.00" },
                         UnitAmount = new Money
@@ -246,12 +236,7 @@ namespace AaravEnterprise.Controllers
                                         {
                                             CurrencyCode = "USD",
                                             Value = "0.00"
-                                        },
-                                        //Shipping = new PayPalCheckoutSdk.Orders.Money()
-                                        //{
-                                        //    CurrencyCode = "USD",
-                                        //    Value = "0.00"
-                                        //},
+                                        },                                       
                                         ItemTotal = new PayPalCheckoutSdk.Orders.Money()
                                         {
                                             CurrencyCode = "USD",
@@ -272,7 +257,6 @@ namespace AaravEnterprise.Controllers
 
                     //IMPORTANT
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
 
                     // Call API with your client and get a response for your call
                     var request = new OrdersCreateRequest();

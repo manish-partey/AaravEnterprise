@@ -90,13 +90,8 @@ namespace AaravEnterprise.Controllers
 
                     var statusCode = response.StatusCode;
                     PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
-                    Console.WriteLine("Status: {0}", result.Status);
-                    Console.WriteLine("Order Id: {0}", result.Id);
-                    Console.WriteLine("Intent: {0}", result.CheckoutPaymentIntent);
-                    Console.WriteLine("Links:");
                     foreach (PayPalCheckoutSdk.Orders.LinkDescription link in result.Links)
-                    {
-                        Console.WriteLine("\t{0}: {1}\tCall Type: {2}", link.Rel, link.Href, link.Method);
+                    {                        
                         if (link.Rel.Trim().ToLower() == "approve")
                         {
                             payPalSetup.ApproveUrl = link.Href;
@@ -124,8 +119,6 @@ namespace AaravEnterprise.Controllers
                 {
                     var statusCode = response.StatusCode;
                     PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
-                    Console.WriteLine("Status: {0}", result.Status);
-                    Console.WriteLine("Capture Id: {0}", result.Id);
 
                     //update view bag so user/payer gets to know the status
                     if (result.Status.Trim().ToUpper() == "COMPLETED")
@@ -267,8 +260,7 @@ namespace AaravEnterprise.Controllers
 
                 }
                 catch (Exception ex)
-                {
-                    Console.WriteLine("Exception: {0}", ex.Message);
+                {   
                     throw;
                 }
                 return response;

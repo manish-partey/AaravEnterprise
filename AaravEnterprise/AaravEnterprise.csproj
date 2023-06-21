@@ -17,6 +17,14 @@
     <Compile Remove="Migrations\20230429165517_1.Designer.cs" />
     <Compile Remove="Migrations\20230429165655_1.cs" />
     <Compile Remove="Migrations\20230429165655_1.Designer.cs" />
+    <Compile Remove="Migrations\20230621103043_OrderDetailsChanges.cs" />
+    <Compile Remove="Migrations\20230621103043_OrderDetailsChanges.Designer.cs" />
+    <Compile Remove="Migrations\20230621104429_OrderKeyChanges.cs" />
+    <Compile Remove="Migrations\20230621104429_OrderKeyChanges.Designer.cs" />
+    <Compile Remove="Migrations\20230621110030_InitialDB.cs" />
+    <Compile Remove="Migrations\20230621110030_InitialDB.Designer.cs" />
+    <Compile Remove="Migrations\20230621110653_OrderDetails.cs" />
+    <Compile Remove="Migrations\20230621110653_OrderDetails.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,6 +21,8 @@ namespace AaravEnterprise.Controllers
         public IConfiguration Configuration { get; }
         private readonly ApplicationDbContext _dbContext;
         Cart cart;
+        AaravEnterprise.Models.Order FinalOrder;
+        OrderDetails OrderDetails;
         public PaypalPaymentController(IConfiguration configuration, ApplicationDbContext dbContext)
         {
             Configuration = configuration;
@@ -35,6 +37,8 @@ namespace AaravEnterprise.Controllers
 
         public async Task<ActionResult> Paypalvtwo(string Cancel = null)
         {
+
+            List<CartViewModel> cartViewModels = new List<CartViewModel>();
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -45,6 +49,7 @@ namespace AaravEnterprise.Controllers
                         select new CartViewModel
                         {
                             CartId = C.CartId,
+                            ServiceId = S.Id,
                             ServiceTitle = S.ServiceTitle,
                             PackageTitle = P.PackageTitle,
                             Amount = C.Amount
@@ -84,7 +89,7 @@ namespace AaravEnterprise.Controllers
                     //redirect URL. when approved or cancelled on PayPal, PayPal uses this URL to redirect to your app/website.
                     payPalSetup.RedirectUrl = Request.Scheme + "://" + Request.Host + "/PaypalPayment/Paypalvtwo?";
                     MyPaypalPayment myPaypalPayment = new MyPaypalPayment();
-                    var cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
+                    cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
                     string ordertotal = Convert.ToString(ViewBag.Total);
                     PayPalHttp.HttpResponse response = await myPaypalPayment.createOrder(payPalSetup, cartViewModels, ordertotal);
 
@@ -122,6 +127,8 @@ namespace AaravEnterprise.Controllers
 
                     //update view bag so user/payer gets to know the status
                     if (result.Status.Trim().ToUpper() == "COMPLETED")
+                        cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
+                        CompleteOrder(userId, total, result.Id, cartViewModels);
                         paymentResultList.Add("Payment Successful. Thank you.");
                     paymentResultList.Add("Payment State: " + result.Status);
                     paymentResultList.Add("Payment ID: " + result.Id);
@@ -144,6 +151,35 @@ namespace AaravEnterprise.Controllers
             }
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View("PaymentDetails", paymentResultList);
+        }
+
+        public void CompleteOrder(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
+        {
+            FinalOrder = new Models.Order();
+            FinalOrder.UserId = userId;
+            FinalOrder.OrderDate = DateTime.UtcNow;
+            FinalOrder.TotalAmount = orderAmount;
+            FinalOrder.OrderStatus = "Completed";
+            FinalOrder.PaymentStatus = "Completed";
+            FinalOrder.PaymentDate = DateTime.UtcNow;
+            FinalOrder.PaymentId = paymentId;
+
+            _dbContext.Order.Add(FinalOrder);
+            _dbContext.SaveChanges();
+            int orderID = FinalOrder.Id;
+
+            OrderDetails = new OrderDetails();
+
+            foreach (var cartItem in cartViewModels)
+            {
+                OrderDetails.OrderId = orderID;
+                OrderDetails.Quantity = 1;
+                OrderDetails.Price = cartItem.Amount;
+                OrderDetails.Total = cartItem.Amount;
+                OrderDetails.ServiceId = cartItem.ServiceId;
+            }
+            _dbContext.OrderDetails.Add(OrderDetails);
+            _dbContext.SaveChanges();
         }
 
 

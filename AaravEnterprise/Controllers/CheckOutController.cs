@@ -36,6 +36,7 @@ namespace AaravEnterprise.Controllers
                             select new CartViewModel
                             {
                                 CartId = C.CartId,
+                                ServiceId= S.Id,
                                 ServiceTitle = S.ServiceTitle,
                                 PackageTitle = P.PackageTitle,
                                 Amount = C.Amount

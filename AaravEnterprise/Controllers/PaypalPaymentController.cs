@@ -1,23 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AaravEnterprise.DataAccess;
+using AaravEnterprise.Models;
+using AaravEnterprise.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using PayPalCheckoutSdk.Core;
 using PayPalCheckoutSdk.Orders;
-using System.Net;
-using PayPalHttp;
-using Microsoft.AspNetCore.Http.Extensions;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
 
 namespace AaravEnterprise.Controllers
 {
     public class PaypalPaymentController : Controller
     {        
         public IConfiguration Configuration { get; }
-        
-        public PaypalPaymentController(IConfiguration configuration)
+        private readonly ApplicationDbContext _dbContext;
+        Cart cart;
+        public PaypalPaymentController(IConfiguration configuration, ApplicationDbContext dbContext)
         {
             Configuration = configuration;
+            _dbContext = dbContext;
+
+           
         }
         
         public ActionResult Index()
@@ -27,7 +35,25 @@ namespace AaravEnterprise.Controllers
         }
 
         public async Task<ActionResult> Paypalvtwo(string Cancel = null)
-        {   
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+            var query = from C in _dbContext.Cart
+                        join S in _dbContext.Services on C.ServiceId equals S.Id
+                        join P in _dbContext.Package on C.PackageId equals P.Id
+                        where C.ApplicationUserId == userId
+                        select new CartViewModel
+                        {
+                            CartId = C.CartId,
+                            ServiceTitle = S.ServiceTitle,
+                            PackageTitle = P.PackageTitle,
+                            Amount = C.Amount
+                        };
+            ViewBag.CartItemsForUser = query.ToList();
+            var total = query.Sum(p => p.Amount);
+            ViewBag.Total = total;
             #region local_variables
             Configuration.GetConnectionString("AppDBConnectionString");
             //setup paypal environment to save some essential varaibles
@@ -67,10 +93,12 @@ namespace AaravEnterprise.Controllers
                     //redirect URL. when approved or cancelled on PayPal, PayPal uses this URL to redirect to your app/website.
                     payPalSetup.RedirectUrl = Request.Scheme + "://" + Request.Host + "/PaypalPayment/Paypalvtwo?";
                     MyPaypalPayment myPaypalPayment = new MyPaypalPayment();
-                    PayPalHttp.HttpResponse response = await myPaypalPayment.createOrder(payPalSetup);
+                    var cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
+                    string ordertotal = Convert.ToString(ViewBag.Total);
+                    PayPalHttp.HttpResponse response = await myPaypalPayment.createOrder(payPalSetup, cartViewModels, ordertotal);
 
                     var statusCode = response.StatusCode;
-                    Order result = response.Result<Order>();
+                    PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
                     Console.WriteLine("Status: {0}", result.Status);
                     Console.WriteLine("Order Id: {0}", result.Id);
                     Console.WriteLine("Intent: {0}", result.CheckoutPaymentIntent);
@@ -104,7 +132,7 @@ namespace AaravEnterprise.Controllers
                 try
                 {
                     var statusCode = response.StatusCode;
-                    Order result = response.Result<Order>();
+                    PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
                     Console.WriteLine("Status: {0}", result.Status);
                     Console.WriteLine("Capture Id: {0}", result.Id);
 
@@ -141,6 +169,7 @@ namespace AaravEnterprise.Controllers
         /// </summary>
         public class MyPaypalPayment
         {
+            List<CartViewModel> cartViewModels1;
             /// <summary>
             /// Initiates Paypal client. Must ensure correct environment.
             /// </summary>
@@ -170,9 +199,28 @@ namespace AaravEnterprise.Controllers
             //### Creating an Order
             //This will create an order and print order id for the created order
 
-            public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup)
+            public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup, List<CartViewModel> cartViewModels, string orderTotal)
             {
                 PayPalHttp.HttpResponse response = null;
+                cartViewModels1 = cartViewModels;
+
+                var itemList = new List<Item>();
+                foreach (var cartItem in cartViewModels1)
+                {
+                    itemList.Add(new Item
+                    {
+                        Quantity = "1",
+                        Name = "Shirt",
+                        Description = "Order Details",
+                        Sku = "sku",
+                        Tax = new Money() { CurrencyCode = "USD", Value = "0.00" },
+                        UnitAmount = new Money
+                        {
+                            CurrencyCode = "USD",
+                            Value = cartItem.Amount.ToString("0.##")
+                        }
+                    });
+                }
 
                 try
                 {
@@ -186,49 +234,28 @@ namespace AaravEnterprise.Controllers
                         {
                             new PurchaseUnitRequest()
                             {
-                                Items = new List<Item>()
-                                {
-                                    new Item()
-                                    {
-                                        Quantity = "1",
-                                        Name = "Shirt",
-                                        Description = "Puma Shirt Exercise",
-                                        Sku = "sku",
-                                        Tax = new PayPalCheckoutSdk.Orders.Money(){ CurrencyCode = "USD", Value = "0.05" },
-                                        UnitAmount = new PayPalCheckoutSdk.Orders.Money(){ CurrencyCode = "USD", Value = "0.50" }
-                                    },
-                                    new Item()
-                                    {
-                                        Quantity = "1",
-                                        Name = "Shoes",
-                                        Description = "Puma Blue Size 7",
-                                        Sku = "sku",
-                                        Tax = new PayPalCheckoutSdk.Orders.Money(){ CurrencyCode = "USD", Value = "0.10" },
-                                        UnitAmount = new PayPalCheckoutSdk.Orders.Money(){ CurrencyCode = "USD", Value = "0.90" }
-                                    }
-                                },
-
-                                AmountWithBreakdown = new AmountWithBreakdown()
+                               Items = itemList,
+                               AmountWithBreakdown = new AmountWithBreakdown()
                                 {
                                     CurrencyCode = "USD",
-                                    Value = "1.65",
+                                    Value = orderTotal,
 
                                     AmountBreakdown = new AmountBreakdown()
                                     {
                                         TaxTotal = new PayPalCheckoutSdk.Orders.Money()
                                         {
                                             CurrencyCode = "USD",
-                                            Value = "0.15"
+                                            Value = "0.00"
                                         },
-                                        Shipping = new PayPalCheckoutSdk.Orders.Money()
-                                        {
-                                            CurrencyCode = "USD",
-                                            Value = "0.10"
-                                        },
+                                        //Shipping = new PayPalCheckoutSdk.Orders.Money()
+                                        //{
+                                        //    CurrencyCode = "USD",
+                                        //    Value = "0.00"
+                                        //},
                                         ItemTotal = new PayPalCheckoutSdk.Orders.Money()
                                         {
                                             CurrencyCode = "USD",
-                                            Value = "1.40"
+                                            Value = orderTotal
                                         }
                                     }
                                 }

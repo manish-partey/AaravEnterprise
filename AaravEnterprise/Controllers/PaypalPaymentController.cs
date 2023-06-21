@@ -181,16 +181,19 @@ namespace AaravEnterprise.Controllers
                         OrderDetails.Price = cartItem.Amount;
                         OrderDetails.Total = cartItem.Amount;
                         OrderDetails.ServiceId = cartItem.ServiceId;
+                        _dbContext.OrderDetails.Add(OrderDetails);
+                        _dbContext.SaveChanges();
+                    }
+
+                    foreach (var cartItem in cartViewModels)
+                    {
                         var rowToRemove = _dbContext.Cart.Find(cartItem.CartId);
                         if (rowToRemove != null)
                         {
                             _dbContext.Cart.Remove(rowToRemove);
-                        }
+                        }                        
                     }
-                    _dbContext.OrderDetails.Add(OrderDetails);
                     _dbContext.SaveChanges();
-
-                    // Commit the transaction
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -200,7 +203,7 @@ namespace AaravEnterprise.Controllers
                     transaction.Rollback();
                 }
             }
-
+        }
         }
 
 
@@ -376,4 +379,4 @@ namespace AaravEnterprise.Controllers
 
         }
     }
-}
+

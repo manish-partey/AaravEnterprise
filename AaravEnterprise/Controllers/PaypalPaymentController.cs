@@ -155,31 +155,52 @@ namespace AaravEnterprise.Controllers
 
         public void CompleteOrder(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
         {
-            FinalOrder = new Models.Order();
-            FinalOrder.UserId = userId;
-            FinalOrder.OrderDate = DateTime.UtcNow;
-            FinalOrder.TotalAmount = orderAmount;
-            FinalOrder.OrderStatus = "Completed";
-            FinalOrder.PaymentStatus = "Completed";
-            FinalOrder.PaymentDate = DateTime.UtcNow;
-            FinalOrder.PaymentId = paymentId;
-
-            _dbContext.Order.Add(FinalOrder);
-            _dbContext.SaveChanges();
-            int orderID = FinalOrder.Id;
-
-            OrderDetails = new OrderDetails();
-
-            foreach (var cartItem in cartViewModels)
+            using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                OrderDetails.OrderId = orderID;
-                OrderDetails.Quantity = 1;
-                OrderDetails.Price = cartItem.Amount;
-                OrderDetails.Total = cartItem.Amount;
-                OrderDetails.ServiceId = cartItem.ServiceId;
+                try
+                {
+                    FinalOrder = new Models.Order();
+                    FinalOrder.UserId = userId;
+                    FinalOrder.OrderDate = DateTime.UtcNow;
+                    FinalOrder.TotalAmount = orderAmount;
+                    FinalOrder.OrderStatus = "Completed";
+                    FinalOrder.PaymentStatus = "Completed";
+                    FinalOrder.PaymentDate = DateTime.UtcNow;
+                    FinalOrder.PaymentId = paymentId;
+
+                    _dbContext.Order.Add(FinalOrder);
+                    _dbContext.SaveChanges();
+                    int orderID = FinalOrder.Id;
+
+                    OrderDetails = new OrderDetails();
+
+                    foreach (var cartItem in cartViewModels)
+                    {
+                        OrderDetails.OrderId = orderID;
+                        OrderDetails.Quantity = 1;
+                        OrderDetails.Price = cartItem.Amount;
+                        OrderDetails.Total = cartItem.Amount;
+                        OrderDetails.ServiceId = cartItem.ServiceId;
+                        var rowToRemove = _dbContext.Cart.Find(cartItem.CartId);
+                        if (rowToRemove != null)
+                        {
+                            _dbContext.Cart.Remove(rowToRemove);
+                        }
+                    }
+                    _dbContext.OrderDetails.Add(OrderDetails);
+                    _dbContext.SaveChanges();
+
+                    // Commit the transaction
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions that occur during the transaction
+                    // Rollback the transaction if needed
+                    transaction.Rollback();
+                }
             }
-            _dbContext.OrderDetails.Add(OrderDetails);
-            _dbContext.SaveChanges();
+
         }
 
 

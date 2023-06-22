@@ -1,8 +1,8 @@
 ﻿@using AaravEnterprise.ViewModel;
 @{
     ViewData["Title"] = "My Order";
-    List<Order> objOrder = new List<Order> { ViewBag.UserOrder };
-    List<OrderDetailViewModel> objOrderDetails = ViewBag.UserOrderDetails;
+    List<Order> objOrder = ViewBag.UserOrder;
+    //List<OrderDetailViewModel> objOrderDetails = ViewBag.UserOrderDetails;
 }
 <div class="container">
     <div class="headings">
@@ -35,7 +35,7 @@
             </tbody>
         </table>
 
-        <div class="headings">
+        @*<div class="headings">
             <h2 class="heading">Order Details</h2>
         </div>
         <table class="table table-striped">
@@ -56,6 +56,6 @@
                     </tr>
                 }
             </tbody>
-        </table>
+        </table>*@
     </div>
 </div>

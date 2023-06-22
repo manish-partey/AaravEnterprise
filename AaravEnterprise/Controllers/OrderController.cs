@@ -27,20 +27,20 @@ namespace AaravEnterprise.Controllers
             }
             else
             {
-                var OrderForUser = _dbContext.Order.FirstOrDefault(s => s.UserId == userId);
+                var OrderForUser = _dbContext.Order.Where(s => s.UserId == userId).ToList();
                 ViewBag.UserOrder = OrderForUser;
 
-                var query = from C in _dbContext.OrderDetails
-                            join S in _dbContext.Services on C.ServiceId equals S.Id                            
-                            where C.OrderId == OrderForUser.Id
-                            select new OrderDetailViewModel
-                            {   
-                                ServiceTitle = S.ServiceTitle,
-                                Amount = C.Price,
-                                Quantity = C.Quantity
-                            };
-                var UserOrderDetails = query.ToList();
-                ViewBag.UserOrderDetails = UserOrderDetails;
+                //var query = from C in _dbContext.OrderDetails
+                //            join S in _dbContext.Services on C.ServiceId equals S.Id                            
+                //            where C.OrderId == OrderForUser.Id
+                //            select new OrderDetailViewModel
+                //            {   
+                //                ServiceTitle = S.ServiceTitle,
+                //                Amount = C.Price,
+                //                Quantity = C.Quantity
+                //            };
+                //var UserOrderDetails = query.ToList();
+                //ViewBag.UserOrderDetails = UserOrderDetails;
                 ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
                 return View();
             }

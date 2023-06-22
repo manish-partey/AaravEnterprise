@@ -18,5 +18,6 @@ namespace AaravEnterprise.Models
         public string? PaymentStatus { get; set; }
         public DateTime PaymentDate { get; set; }
         public string? PaymentId { get; set; }
+        public ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }

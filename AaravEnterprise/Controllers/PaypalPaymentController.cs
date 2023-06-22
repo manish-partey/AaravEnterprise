@@ -184,6 +184,7 @@ namespace AaravEnterprise.Controllers
                         _dbContext.OrderDetails.Add(OrderDetails);
                         _dbContext.SaveChanges();
                     }
+                    transaction.Rollback();
 
                     foreach (var cartItem in cartViewModels)
                     {

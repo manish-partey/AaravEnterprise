@@ -25,6 +25,10 @@
     <Compile Remove="Migrations\20230621110030_InitialDB.Designer.cs" />
     <Compile Remove="Migrations\20230621110653_OrderDetails.cs" />
     <Compile Remove="Migrations\20230621110653_OrderDetails.Designer.cs" />
+    <Compile Remove="Migrations\20230621122112_OrderOrderDetails.cs" />
+    <Compile Remove="Migrations\20230621122112_OrderOrderDetails.Designer.cs" />
+    <Compile Remove="Migrations\20230622055208_OrderDetailsPK.cs" />
+    <Compile Remove="Migrations\20230622055208_OrderDetailsPK.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

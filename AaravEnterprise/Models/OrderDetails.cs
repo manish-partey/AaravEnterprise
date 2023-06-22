@@ -8,7 +8,7 @@ namespace AaravEnterprise.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int OrderDetailId { get; set; }
         [ForeignKey("OrderId")]
         [ValidateNever]
         public int OrderId { get; set; }      

@@ -3,6 +3,7 @@ using AaravEnterprise.Models;
 using AaravEnterprise.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PayPalCheckoutSdk.Core;
 using PayPalCheckoutSdk.Orders;
@@ -17,7 +18,7 @@ namespace AaravEnterprise.Controllers
 {
     [Authorize]
     public class PaypalPaymentController : Controller
-    {        
+    {
         public IConfiguration Configuration { get; }
         private readonly ApplicationDbContext _dbContext;
         Cart cart;
@@ -28,7 +29,7 @@ namespace AaravEnterprise.Controllers
             Configuration = configuration;
             _dbContext = dbContext;
         }
-        
+
         public ActionResult Index()
         {
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
@@ -61,7 +62,7 @@ namespace AaravEnterprise.Controllers
             #region local_variables
             MyPaypalPayment.MyPaypalSetup payPalSetup
                 = new MyPaypalPayment.MyPaypalSetup { Environment = Configuration.GetSection("PayPal:Mode").Value.ToString(), ClientId = Configuration.GetSection("PayPal:ClientId").Value.ToString(), Secret = Configuration.GetSection("PayPal:Secret").Value.ToString() };
-            
+
             List<string> paymentResultList = new List<string>();
             #endregion
 
@@ -96,7 +97,7 @@ namespace AaravEnterprise.Controllers
                     var statusCode = response.StatusCode;
                     PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
                     foreach (PayPalCheckoutSdk.Orders.LinkDescription link in result.Links)
-                    {                        
+                    {
                         if (link.Rel.Trim().ToLower() == "approve")
                         {
                             payPalSetup.ApproveUrl = link.Href;
@@ -128,8 +129,8 @@ namespace AaravEnterprise.Controllers
                     //update view bag so user/payer gets to know the status
                     if (result.Status.Trim().ToUpper() == "COMPLETED")
                         cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
-                        CompleteOrder(userId, total, result.Id, cartViewModels);
-                        paymentResultList.Add("Payment Successful. Thank you.");
+                    CompleteOrder(userId, total, result.Id, cartViewModels);
+                    paymentResultList.Add("Payment Successful. Thank you.");
                     paymentResultList.Add("Payment State: " + result.Status);
                     paymentResultList.Add("Payment ID: " + result.Id);
 
@@ -176,15 +177,29 @@ namespace AaravEnterprise.Controllers
 
                     foreach (var cartItem in cartViewModels)
                     {
-                        OrderDetails.OrderId = orderID;
-                        OrderDetails.Quantity = 1;
-                        OrderDetails.Price = cartItem.Amount;
-                        OrderDetails.Total = cartItem.Amount;
-                        OrderDetails.ServiceId = cartItem.ServiceId;
-                        _dbContext.OrderDetails.Add(OrderDetails);
-                        _dbContext.SaveChanges();
+                        int orderId = orderID;
+                        int serviceId = cartItem.ServiceId;
+                        int quantity = 1;
+                        decimal price = cartItem.Amount;
+                        decimal total = cartItem.Amount;
+
+                        string query = $@"SET IDENTITY_INSERT [OrderDetails] OFF;
+                                        INSERT INTO [OrderDetails]
+                                        ([OrderId]
+                                        ,[ServiceId]
+                                        ,[Quantity]
+                                        ,[Price]
+                                        ,[Total])
+                                VALUES
+                                        ({orderId}
+                                        ,{serviceId}
+                                        ,{quantity}
+                                        ,{price}
+                                        ,{total})
+
+                                         SET IDENTITY_INSERT [OrderDetails] ON;";
+                        var result = _dbContext.Database.ExecuteSqlRaw(query);
                     }
-                    transaction.Rollback();
 
                     foreach (var cartItem in cartViewModels)
                     {
@@ -192,89 +207,84 @@ namespace AaravEnterprise.Controllers
                         if (rowToRemove != null)
                         {
                             _dbContext.Cart.Remove(rowToRemove);
-                        }                        
+                        }
                     }
                     _dbContext.SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception ex)
                 {
-                    // Handle any exceptions that occur during the transaction
-                    // Rollback the transaction if needed
                     transaction.Rollback();
                 }
             }
         }
-        }
+    }
 
-
-
+    /// <summary>
+    /// This is your own custom class. NOT from paypal SDK. Write it the way you want it
+    /// </summary>
+    public class MyPaypalPayment
+    {
+        List<CartViewModel> cartItemList;
         /// <summary>
-        /// This is your own custom class. NOT from paypal SDK. Write it the way you want it
+        /// Initiates Paypal client. Must ensure correct environment.
         /// </summary>
-        public class MyPaypalPayment
+        /// <param name="paypalEnvironment">provide value sandbox for testing,  provide value live for live environments</param>            
+        /// <returns>PayPalHttp.HttpClient</returns>
+        public PayPalHttpClient client(MyPaypalSetup paypalEnvironment)
         {
-            List<CartViewModel> cartItemList;
-            /// <summary>
-            /// Initiates Paypal client. Must ensure correct environment.
-            /// </summary>
-            /// <param name="paypalEnvironment">provide value sandbox for testing,  provide value live for live environments</param>            
-            /// <returns>PayPalHttp.HttpClient</returns>
-            public PayPalHttpClient client(MyPaypalSetup paypalEnvironment)
+            PayPalEnvironment environment = null;
+
+            if (paypalEnvironment.Environment == "live")
             {
-                PayPalEnvironment environment = null;
-
-                if (paypalEnvironment.Environment == "live")
-                {
-                    // Creating a live environment
-                    environment = new LiveEnvironment(paypalEnvironment.ClientId, paypalEnvironment.Secret);
-                }
-                else
-                {
-                    // Creating a sandbox environment
-                    environment = new SandboxEnvironment(paypalEnvironment.ClientId, paypalEnvironment.Secret);
-                }
-
-                // Creating a client for the environment
-                PayPalHttpClient client = new PayPalHttpClient(environment);
-                return client;
+                // Creating a live environment
+                environment = new LiveEnvironment(paypalEnvironment.ClientId, paypalEnvironment.Secret);
+            }
+            else
+            {
+                // Creating a sandbox environment
+                environment = new SandboxEnvironment(paypalEnvironment.ClientId, paypalEnvironment.Secret);
             }
 
+            // Creating a client for the environment
+            PayPalHttpClient client = new PayPalHttpClient(environment);
+            return client;
+        }
 
-            //### Creating an Order
-            //This will create an order and print order id for the created order
+        //### Creating an Order
+        //This will create an order and print order id for the created order
 
-            public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup, List<CartViewModel> cartViewModels, string orderTotal)
+        public async Task<PayPalHttp.HttpResponse> createOrder(MyPaypalSetup paypalSetup, List<CartViewModel> cartViewModels, string orderTotal)
+        {
+            PayPalHttp.HttpResponse response = null;
+            cartItemList = cartViewModels;
+            var itemList = new List<Item>();
+            foreach (var cartItem in cartItemList)
             {
-                PayPalHttp.HttpResponse response = null;
-                cartItemList = cartViewModels;
-                var itemList = new List<Item>();
-                foreach (var cartItem in cartItemList)
+                itemList.Add(new Item
                 {
-                    itemList.Add(new Item
+                    Quantity = "1",
+                    Name = cartItem.PackageTitle,
+                    Description = cartItem.ServiceTitle,
+                    Sku = "sku",
+                    Tax = new Money() { CurrencyCode = "USD", Value = "0.00" },
+                    UnitAmount = new Money
                     {
-                        Quantity = "1",
-                        Name = cartItem.PackageTitle,
-                        Description = cartItem.ServiceTitle,
-                        Sku = "sku",
-                        Tax = new Money() { CurrencyCode = "USD", Value = "0.00" },
-                        UnitAmount = new Money
-                        {
-                            CurrencyCode = "USD",
-                            Value = cartItem.Amount.ToString("0.##")
-                        }
-                    });
-                }
+                        CurrencyCode = "USD",
+                        Value = cartItem.Amount.ToString("0.##")
+                    }
+                });
+            }
 
-                try
+            try
+            {
+                // Construct a request object and set desired parameters
+                // Here, OrdersCreateRequest() creates a POST request to /v2/checkout/orders
+                #region order_creation
+                var order = new OrderRequest()
                 {
-                    // Construct a request object and set desired parameters
-                    // Here, OrdersCreateRequest() creates a POST request to /v2/checkout/orders
-                    #region order_creation
-                    var order = new OrderRequest()
-                    {
-                        CheckoutPaymentIntent = "CAPTURE",
-                        PurchaseUnits = new List<PurchaseUnitRequest>()
+                    CheckoutPaymentIntent = "CAPTURE",
+                    PurchaseUnits = new List<PurchaseUnitRequest>()
                         {
                             new PurchaseUnitRequest()
                             {
@@ -290,7 +300,7 @@ namespace AaravEnterprise.Controllers
                                         {
                                             CurrencyCode = "USD",
                                             Value = "0.00"
-                                        },                                       
+                                        },
                                         ItemTotal = new PayPalCheckoutSdk.Orders.Money()
                                         {
                                             CurrencyCode = "USD",
@@ -300,84 +310,82 @@ namespace AaravEnterprise.Controllers
                                 }
                             }
                         },
-                        ApplicationContext = new ApplicationContext()
-                        {
-                            ReturnUrl = paypalSetup.RedirectUrl,
-                            CancelUrl = paypalSetup.RedirectUrl + "&Cancel=true"
-                        }
-                    };
+                    ApplicationContext = new ApplicationContext()
+                    {
+                        ReturnUrl = paypalSetup.RedirectUrl,
+                        CancelUrl = paypalSetup.RedirectUrl + "&Cancel=true"
+                    }
+                };
 
-                    #endregion
+                #endregion
 
-                    //IMPORTANT
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                //IMPORTANT
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                    // Call API with your client and get a response for your call
-                    var request = new OrdersCreateRequest();
-                    request.Prefer("return=representation");
-                    request.RequestBody(order);
-                    PayPalHttpClient paypalHttpClient = client(paypalSetup);
-                    response = await paypalHttpClient.Execute(request);
-
-                }
-                catch (Exception ex)
-                {   
-                    throw;
-                }
-                return response;
-            }
-
-
-            //### Capturing an Order
-            //Before capturing an order, order should be approved by the buyer using the approve link in create order response
-
-            public async Task<PayPalHttp.HttpResponse> captureOrder(MyPaypalSetup paypalSetup)
-            {
-                // Construct a request object and set desired parameters
-                // Replace ORDER-ID with the approved order id from create order
-                var request = new OrdersCaptureRequest(paypalSetup.PayerApprovedOrderId);
-                request.RequestBody(new OrderActionRequest());
+                // Call API with your client and get a response for your call
+                var request = new OrdersCreateRequest();
+                request.Prefer("return=representation");
+                request.RequestBody(order);
                 PayPalHttpClient paypalHttpClient = client(paypalSetup);
-                PayPalHttp.HttpResponse response = await paypalHttpClient.Execute(request);
-                return response;
-            }
+                response = await paypalHttpClient.Execute(request);
 
-            public class MyPaypalSetup
+            }
+            catch (Exception ex)
             {
-                /// <summary>
-                /// Provide value sandbox for testing,  provide value live for real money
-                /// </summary>
-                public String Environment { get; set; }
-                /// <summary>
-                /// Client id as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
-                /// Use sandbox accounts for sandbox testing
-                /// </summary>
-                public String ClientId { get; set; }
-                /// <summary>
-                /// Secret as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
-                /// Use sandbox accounts for sandbox testing
-                /// </summary>
-                public String Secret { get; set; }
-
-                /// <summary>
-                /// This is the URL that you will pass to paypal which paypal will use to redirect payer back to your website.
-                /// So essentially it is the same controller URL that you must pass
-                /// </summary>
-                public String RedirectUrl { get; set; }
-
-                /// <summary>
-                /// Once order is created on Paypal, it redirects control to your app with a URL that shows order details. Your website must take the payer to this page
-                /// so the payer approved the payment. Store this URL in this property
-                /// </summary>
-                public String ApproveUrl { get; set; }
-
-                /// <summary>
-                /// When paypal redirects control to your website it provides a Approved Order ID which we then pass it back to paypal to execute the order.
-                /// Store this approved order ID in this property
-                /// </summary>
-                public String PayerApprovedOrderId { get; set; }
+                throw;
             }
+            return response;
+        }
 
+        //### Capturing an Order
+        //Before capturing an order, order should be approved by the buyer using the approve link in create order response
+
+        public async Task<PayPalHttp.HttpResponse> captureOrder(MyPaypalSetup paypalSetup)
+        {
+            // Construct a request object and set desired parameters
+            // Replace ORDER-ID with the approved order id from create order
+            var request = new OrdersCaptureRequest(paypalSetup.PayerApprovedOrderId);
+            request.RequestBody(new OrderActionRequest());
+            PayPalHttpClient paypalHttpClient = client(paypalSetup);
+            PayPalHttp.HttpResponse response = await paypalHttpClient.Execute(request);
+            return response;
+        }
+
+        public class MyPaypalSetup
+        {
+            /// <summary>
+            /// Provide value sandbox for testing,  provide value live for real money
+            /// </summary>
+            public String Environment { get; set; }
+            /// <summary>
+            /// Client id as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
+            /// Use sandbox accounts for sandbox testing
+            /// </summary>
+            public String ClientId { get; set; }
+            /// <summary>
+            /// Secret as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
+            /// Use sandbox accounts for sandbox testing
+            /// </summary>
+            public String Secret { get; set; }
+
+            /// <summary>
+            /// This is the URL that you will pass to paypal which paypal will use to redirect payer back to your website.
+            /// So essentially it is the same controller URL that you must pass
+            /// </summary>
+            public String RedirectUrl { get; set; }
+
+            /// <summary>
+            /// Once order is created on Paypal, it redirects control to your app with a URL that shows order details. Your website must take the payer to this page
+            /// so the payer approved the payment. Store this URL in this property
+            /// </summary>
+            public String ApproveUrl { get; set; }
+
+            /// <summary>
+            /// When paypal redirects control to your website it provides a Approved Order ID which we then pass it back to paypal to execute the order.
+            /// Store this approved order ID in this property
+            /// </summary>
+            public String PayerApprovedOrderId { get; set; }
         }
     }
+}
 

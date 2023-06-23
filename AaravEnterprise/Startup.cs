@@ -26,6 +26,16 @@ namespace AaravEnterprise
         {
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<EmailService>(provider =>
+            {
+                var emailSettings = Configuration.GetSection("EmailSettings");
+                var smtpServer = emailSettings["SmtpServer"];
+                var smtpPort = int.Parse(emailSettings["SmtpPort"]);
+                var smtpUsername = emailSettings["SmtpUsername"];
+                var smtpPassword = emailSettings["SmtpPassword"];
+
+                return new EmailService(smtpServer, smtpPort, smtpUsername, smtpPassword);
+            });
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));

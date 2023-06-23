@@ -147,19 +147,19 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <form action="#" class="contFrm" method="POST">
+                                            <form asp-action="SendEmail" asp-controller="SendEmail" class="contFrm" method="POST">                                                
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        <input type="text" name="name" placeholder="Your Name" class="inptFld" required />
+                                                        <input type="text" name="name" id="name" placeholder="Your Name" class="inptFld" required />
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <input type="email" name="email" placeholder="Email Address" class="inptFld" required />
+                                                        <input type="email" name="email" id="email" placeholder="Email Address" class="inptFld" required />
                                                     </div>
                                                     <div class="col-sm-12">
-                                                        <input type="text" name="sub" placeholder="Subject" class="inptFld" required />
+                                                        <input type="text" name="subject" id="subject" placeholder="Subject" class="inptFld" required />
                                                     </div>
                                                     <div class="col-12">
-                                                        <textarea class="inptFld"  placeholder="Your Message..." required></textarea>
+                                                        <textarea class="inptFld" name="emailBody" id="emailBody" placeholder="Your Message..." required></textarea>
                                                     </div>
                                                     <div class="col-12">
                                                         <input type="submit" name="submit" value="SUBMIT" class="inptBtn" />
@@ -173,6 +173,7 @@
                         </section>
                     }
         <section section="inner">
+            <partial name="_Notification" />
             @RenderBody()
 
             <div class="tabs-main">

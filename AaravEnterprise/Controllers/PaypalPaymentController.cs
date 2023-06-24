@@ -1,5 +1,6 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
+using AaravEnterprise.Utility;
 using AaravEnterprise.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AaravEnterprise.Controllers
@@ -19,13 +21,15 @@ namespace AaravEnterprise.Controllers
     [Authorize]
     public class PaypalPaymentController : Controller
     {
+        private readonly CustomEmailSender _emailSender;
         public IConfiguration Configuration { get; }
         private readonly ApplicationDbContext _dbContext;
         Cart cart;
         AaravEnterprise.Models.Order FinalOrder;
         OrderDetails OrderDetails;
-        public PaypalPaymentController(IConfiguration configuration, ApplicationDbContext dbContext)
+        public PaypalPaymentController(IConfiguration configuration, ApplicationDbContext dbContext, CustomEmailSender emailSender)
         {
+            _emailSender = emailSender;
             Configuration = configuration;
             _dbContext = dbContext;
         }
@@ -129,6 +133,7 @@ namespace AaravEnterprise.Controllers
                     //update view bag so user/payer gets to know the status
                     if (result.Status.Trim().ToUpper() == "COMPLETED")
                         cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
+                    SendOrderConfirmationEmail(userId, total, result.Id, cartViewModels);
                     CompleteOrder(userId, total, result.Id, cartViewModels);
                     paymentResultList.Add("Payment Successful. Thank you.");
                     paymentResultList.Add("Payment State: " + result.Status);
@@ -152,6 +157,52 @@ namespace AaravEnterprise.Controllers
             }
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View("PaymentDetails", paymentResultList);
+        }
+
+        public void SendOrderConfirmationEmail(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
+        {
+            var objUser = _dbContext.ApplicationUser.FirstOrDefault(c => c.Id == userId);
+
+            StringBuilder emailBody = new StringBuilder();
+            emailBody.Append("<html>");
+            emailBody.Append("<head>");
+            emailBody.Append("<title>Order Confirmation</title>");
+            emailBody.Append("</head>");
+            emailBody.Append("<body>");
+            emailBody.Append("<h1>Order Confirmation</h1>");
+            emailBody.Append("<p>Dear "+ objUser.Name + ",</p>");
+            emailBody.Append("<p>Thank you for your order! We are pleased to confirm that your order has been received and is being processed.</p>");
+            emailBody.Append("<h2>Order Details</h2>");
+            emailBody.Append("<table>");
+            emailBody.Append("<thead>");
+            emailBody.Append("<tr>");
+            emailBody.Append("<th>Service</th>");
+            emailBody.Append("<th>Package</th>");
+            emailBody.Append("<th>Amount</th>");
+            emailBody.Append("</tr>");
+            emailBody.Append("</thead>");
+            emailBody.Append("<tbody>");
+            foreach (var cartItem in cartViewModels)
+            {
+
+                emailBody.Append("<tr>");
+                emailBody.Append("<td>"+ cartItem.ServiceTitle + "</td>");
+                emailBody.Append("<td>" + cartItem.PackageTitle + "</td>");
+                emailBody.Append("<td>" + cartItem.Amount + "</td>");
+                emailBody.Append("</tr>");
+            }
+            emailBody.Append("</tbody>");
+            emailBody.Append("</table>");
+            emailBody.Append("<p>Total Amount: USD "+ orderAmount + " </p>");
+            emailBody.Append("<h2>Payment Information</h2>");
+            emailBody.Append("<p>Payment Reference Number: "+ paymentId + "</p>");
+            emailBody.Append("<p>If you have any questions regarding your order, please feel free to contact our customer support team.</p>");
+            emailBody.Append("<p>Thank you for shopping with us!</p>");
+            emailBody.Append("<p>Sincerely,<br> Aarav Enterprise</p>");
+            emailBody.Append("</body>");
+            emailBody.Append("</html>");
+
+            _emailSender.SendEmail(objUser.Email, "Payment Confirmation for Aarav Enterprise", emailBody.ToString());
         }
 
         public void CompleteOrder(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)

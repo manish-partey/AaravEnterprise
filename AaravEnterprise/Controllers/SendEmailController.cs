@@ -8,12 +8,12 @@ namespace AaravEnterprise.Controllers
 {
     public class SendEmailController : Controller
     {
-        private readonly EmailSender _emailSender;
+        private readonly CustomEmailSender _emailSender;
         private readonly IConfiguration _configuration;
         string toEmail;
         string subj;
         StringBuilder MessageBody = new StringBuilder();
-        public SendEmailController(EmailSender emailSender, IConfiguration configuration)
+        public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration)
         {
             _emailSender  = emailSender;
             _configuration = configuration;

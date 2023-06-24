@@ -1,34 +1,32 @@
-﻿using System.Net.Mail;
-using AaravEnterprise.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AaravEnterprise.Utility
 {
-    public class EmailSender
+    public class EmailSender : IEmailSender
     {
-        private readonly SmtpSettings _smtpSettings;
-        public EmailSender(IOptions<SmtpSettings> smtpSettings)
+        private readonly CustomEmailSender _emailSender;
+        public IConfiguration Configuration { get; }
+        public EmailSender()
         {
-            _smtpSettings = smtpSettings.Value;
+                
+        }
+        public EmailSender(IConfiguration configuration,  CustomEmailSender emailSender)
+        {
+            _emailSender = emailSender;
+            Configuration = configuration;
+         
         }
 
-        public void SendEmail(string toAddress, string subject, string body)
-        {
-            using (var mailMessage = new MailMessage())
-            {
-                mailMessage.From = new MailAddress(_smtpSettings.Username);
-                mailMessage.To.Add(toAddress);
-                mailMessage.CC.Add(_smtpSettings.Username);
-                mailMessage.Subject = subject;
-                mailMessage.Body = body;
-                mailMessage.IsBodyHtml = true;
-
-                using (var smtpClient = new SmtpClient(_smtpSettings.SmtpServer, _smtpSettings.Port))
-                {
-                    smtpClient.Credentials = new System.Net.NetworkCredential(_smtpSettings.Username, _smtpSettings.Password);
-                    smtpClient.Send(mailMessage);
-                }
-            }
+        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {  
+            _emailSender.SendEmail(email, subject, htmlMessage);
+            return Task.CompletedTask;
         }
     }
 }

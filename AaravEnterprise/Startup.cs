@@ -1,5 +1,6 @@
 using AaravEnterprise.Data.DbIntializer;
 using AaravEnterprise.DataAccess;
+using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,17 +26,8 @@ namespace AaravEnterprise
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<EmailService>(provider =>
-            {
-                var emailSettings = Configuration.GetSection("EmailSettings");
-                var smtpServer = emailSettings["SmtpServer"];
-                var smtpPort = int.Parse(emailSettings["SmtpPort"]);
-                var smtpUsername = emailSettings["SmtpUsername"];
-                var smtpPassword = emailSettings["SmtpPassword"];
-
-                return new EmailService(smtpServer, smtpPort, smtpUsername, smtpPassword);
-            });
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            services.AddScoped<EmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));

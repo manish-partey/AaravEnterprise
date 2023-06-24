@@ -1,16 +1,34 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Net.Mail;
+using AaravEnterprise.Models;
+using Microsoft.Extensions.Options;
 
 namespace AaravEnterprise.Utility
 {
-    public class EmailSender : IEmailSender
+    public class EmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        private readonly SmtpSettings _smtpSettings;
+        public EmailSender(IOptions<SmtpSettings> smtpSettings)
         {
-            return Task.CompletedTask;
+            _smtpSettings = smtpSettings.Value;
+        }
+
+        public void SendEmail(string toAddress, string subject, string body)
+        {
+            using (var mailMessage = new MailMessage())
+            {
+                mailMessage.From = new MailAddress(_smtpSettings.Username);
+                mailMessage.To.Add(toAddress);
+                mailMessage.CC.Add(_smtpSettings.Username);
+                mailMessage.Subject = subject;
+                mailMessage.Body = body;
+                mailMessage.IsBodyHtml = true;
+
+                using (var smtpClient = new SmtpClient(_smtpSettings.SmtpServer, _smtpSettings.Port))
+                {
+                    smtpClient.Credentials = new System.Net.NetworkCredential(_smtpSettings.Username, _smtpSettings.Password);
+                    smtpClient.Send(mailMessage);
+                }
+            }
         }
     }
 }

@@ -56,6 +56,11 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [RegularExpression(@"^\d{10}$|^\d+$", ErrorMessage = "Please enter a valid phone number or a numeric value.")]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -98,7 +103,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Name= Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber=Input.PhoneNumber, Name= Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

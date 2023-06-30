@@ -1,6 +1,8 @@
 ﻿@using AaravEnterprise.Models
 @using AaravEnterprise.DataAccess
 @using AaravEnterprise.Utility;
+
+@using System.Web;
 @inject ApplicationDbContext dbContext
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -153,36 +155,44 @@
                 <div class="grid">
                     <ul role="list">
                         @*@foreach (var item in dbContext.Services)
-                            {
-                                int i = 1;
-                                string strIconClass = "icon icon-" + i;
-                                string strImangeSrc = "~/assets/img/icon-" + i + ".png";
-                                <li>
-                                    <a asp-controller="Service" asp-action="Index" asp-route-Id="@item.Id">
-                                        <div class="grid-content">
-                                            <div class="@strIconClass">
-                                                <img src="@strImangeSrc" alt="" srcset="">
-                                            </div>
-                                            <div class="grid-heading">
-                                                @item.ServiceTitle
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
+                        {
+                            int i = 1;
+                            string strIconClass = "icon icon-" + i;
+                            string strImangeSrc = "~/assets/img/icon-" + i + ".png";
+
+
+                            await Context.Response.Body.WriteAsync(System.Text.Encoding.UTF8.GetBytes(strIconClass), 0, System.Text.Encoding.UTF8.GetBytes(strIconClass).Length);
+
+                            string htmlCode = @"<a asp-controller=""Service"" asp-action=""Index"" asp-route-Id=" + @item.Id + ">";
+                            htmlCode = htmlCode+ "<div class='grid-content'>";
+                            htmlCode = htmlCode + "<div class='"+@strIconClass+"'>";
+                            htmlCode = htmlCode + "<img src='" + @strImangeSrc + "' alt='' srcset=''>";
+                            htmlCode = htmlCode + "</div>";
+                            htmlCode = htmlCode + "<div class='grid-heading'>";
+                            htmlCode = htmlCode + @item.ServiceTitle;
+                            htmlCode = htmlCode + "</div>";
+                            htmlCode = htmlCode + "</div>";
+                            htmlCode = htmlCode + "</a>";
+                        <li>
+                            @Html.Raw(htmlCode)
+
+                        </li>
                                 i = i++;
                             }*@
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-1">
-                                        <img src="~/assets/img/icon-1.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        UI/UX Design
-                                    </div>
+                    <li>
+
+                        <a asp-controller="Service" asp-action="Index" asp-route-Id=1><div class='grid-content'><div class='icon icon-1'><img src='~/assets/img/icon-1.png' alt='' srcset=''></div><div class='grid-heading'>UX/UI Design Manish</div></div></a>
+                        <a href="#">
+                            <div class="grid-content">
+                                <div class="icon icon-1">
+                                    <img src="~/assets/img/icon-1.png" alt="" srcset="">
                                 </div>
-                            </a>
-                        </li>
+                                <div class="grid-heading">
+                                    UI/UX Design
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                         <li>
                             <a href="#">
                                 <div class="grid-content">

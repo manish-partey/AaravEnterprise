@@ -16,25 +16,25 @@ namespace AaravEnterprise.Controllers
         }
         public IActionResult Index()
         {
-            var query = from t1 in _dbContext.Package
-                        join t2 in _dbContext.Services on t1.ServicesId equals t2.Id                       
-                        select new PackagesAdminViewModel
-                        {
-                            Id = t2.Id,
-                            ServiceTitle = t2.ServiceTitle,
-                            ServiceDesciption = t2.ServiceDescription,
-                            PackageId = t1.Id,
-                            PackageTitle = t1.PackageTitle,
-                            PackageDescription = t1.PackageDescription,
-                            Price = t1.Price
-                        };
-            var result = query.ToList();
+            IQueryable<PackagesAdminViewModel> query = from t1 in _dbContext.Package
+                                                       join t2 in _dbContext.Services on t1.ServicesId equals t2.Id
+                                                       select new PackagesAdminViewModel
+                                                       {
+                                                           Id = t2.Id,
+                                                           ServiceTitle = t2.ServiceTitle,
+                                                           ServiceDesciption = t2.ServiceDescription,
+                                                           PackageId = t1.Id,
+                                                           PackageTitle = t1.PackageTitle,
+                                                           PackageDescription = t1.PackageDescription,
+                                                           Price = t1.Price
+                                                       };
+            System.Collections.Generic.List<PackagesAdminViewModel> result = query.ToList();
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
-            return View(result);           
+            return View(result);
         }
         public IActionResult Create()
         {
-            var services = _dbContext.Services.ToList();
+            System.Collections.Generic.List<Services> services = _dbContext.Services.ToList();
             ViewBag.Services = new SelectList(services, "Id", "ServiceTitle");
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
@@ -43,7 +43,7 @@ namespace AaravEnterprise.Controllers
         [HttpPost]
         public IActionResult Create(Package obj, int ServicesId)
         {
-            var objectService = _dbContext.Services.FirstOrDefault(c => c.Id == ServicesId);
+            Services objectService = _dbContext.Services.FirstOrDefault(c => c.Id == ServicesId);
             obj.Services = objectService;
             obj.ServicesId = ServicesId;
             _dbContext.Package.Add(obj);
@@ -106,7 +106,7 @@ namespace AaravEnterprise.Controllers
         [HttpPost]
         public IActionResult Edit(Package obj)
         {
-            var objectService = _dbContext.Services.FirstOrDefault(c => c.Id == obj.ServicesId);
+            Services objectService = _dbContext.Services.FirstOrDefault(c => c.Id == obj.ServicesId);
             obj.Services = objectService;
             _dbContext.Package.Update(obj);
             _dbContext.SaveChanges();

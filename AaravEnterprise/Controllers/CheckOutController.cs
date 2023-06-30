@@ -1,10 +1,10 @@
 ﻿using AaravEnterprise.DataAccess;
-using Microsoft.AspNetCore.Mvc;
 using AaravEnterprise.Models;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using AaravEnterprise.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Security.Claims;
 
 namespace AaravEnterprise.Controllers
 {
@@ -12,7 +12,7 @@ namespace AaravEnterprise.Controllers
     public class CheckOutController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
-        Cart cart;
+        private readonly Cart cart;
         public CheckOutController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -20,8 +20,8 @@ namespace AaravEnterprise.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ClaimsIdentity claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (userId == null)
             {
@@ -29,20 +29,20 @@ namespace AaravEnterprise.Controllers
             }
             else
             {
-                var query = from C in _dbContext.Cart
-                            join S in _dbContext.Services on C.ServiceId equals S.Id
-                            join P in _dbContext.Package on C.PackageId equals P.Id
-                            where C.ApplicationUserId == userId
-                            select new CartViewModel
-                            {
-                                CartId = C.CartId,
-                                ServiceId= S.Id,
-                                ServiceTitle = S.ServiceTitle,
-                                PackageTitle = P.PackageTitle,
-                                Amount = C.Amount
-                            };
-                var cart = query.ToList();
-                var total = query.Sum(p => p.Amount);
+                IQueryable<CartViewModel> query = from C in _dbContext.Cart
+                                                  join S in _dbContext.Services on C.ServiceId equals S.Id
+                                                  join P in _dbContext.Package on C.PackageId equals P.Id
+                                                  where C.ApplicationUserId == userId
+                                                  select new CartViewModel
+                                                  {
+                                                      CartId = C.CartId,
+                                                      ServiceId = S.Id,
+                                                      ServiceTitle = S.ServiceTitle,
+                                                      PackageTitle = P.PackageTitle,
+                                                      Amount = C.Amount
+                                                  };
+                System.Collections.Generic.List<CartViewModel> cart = query.ToList();
+                int total = query.Sum(p => p.Amount);
                 ViewBag.Total = total; //
                 ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
                 return View(cart);

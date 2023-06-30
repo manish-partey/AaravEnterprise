@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AaravEnterprise.Utility;
-using AaravEnterprise.DataAccess;
+﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
+using AaravEnterprise.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace AaravEnterprise.Data.DbIntializer
 {
@@ -31,7 +29,7 @@ namespace AaravEnterprise.Data.DbIntializer
                     _applicationDbContext.Database.Migrate();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
             {

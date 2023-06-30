@@ -13,10 +13,10 @@ namespace AaravEnterprise.Controllers
         }
         public IActionResult Index(int? Id)
         {
-            var objServices = _dbContext.Services.FirstOrDefault(s => s.Id == Id); ;
+            Models.Services objServices = _dbContext.Services.FirstOrDefault(s => s.Id == Id); ;
             ViewBag.Services = objServices;
 
-            var objPackages = _dbContext.Package.Where(s => s.ServicesId == Id).ToList();
+            System.Collections.Generic.List<Models.Package> objPackages = _dbContext.Package.Where(s => s.ServicesId == Id).ToList();
             ViewBag.Packages = objPackages;
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();

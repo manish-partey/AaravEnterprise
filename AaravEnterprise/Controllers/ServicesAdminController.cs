@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AaravEnterprise.DataAccess;
+﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 

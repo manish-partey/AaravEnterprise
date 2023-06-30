@@ -1,16 +1,16 @@
 ﻿using AaravEnterprise.DataAccess;
-using Microsoft.AspNetCore.Mvc;
 using AaravEnterprise.Models;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
-using AaravEnterprise.ViewModel;
 
 namespace AaravEnterprise.Controllers
-{[Authorize]
+{
+    [Authorize]
     public class OrderController : Controller
     {
-        string query = "";
+        private readonly string query = "";
         private readonly ApplicationDbContext _dbContext;
         public OrderController(ApplicationDbContext dbContext)
         {
@@ -18,8 +18,8 @@ namespace AaravEnterprise.Controllers
         }
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ClaimsIdentity claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (userId == null)
             {
@@ -27,7 +27,7 @@ namespace AaravEnterprise.Controllers
             }
             else
             {
-                var OrderForUser = _dbContext.Order.Where(s => s.UserId == userId).ToList();
+                System.Collections.Generic.List<Order> OrderForUser = _dbContext.Order.Where(s => s.UserId == userId).ToList();
                 ViewBag.UserOrder = OrderForUser;
 
                 //var query = from C in _dbContext.OrderDetails
@@ -44,7 +44,7 @@ namespace AaravEnterprise.Controllers
                 ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
                 return View();
             }
-            
+
         }
     }
 }

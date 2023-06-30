@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AaravEnterprise.Models
 {
@@ -20,7 +14,7 @@ namespace AaravEnterprise.Models
         public int ServicesId { get; set; }
         [ForeignKey("ServicesId")]
         public Services Services { get; set; }
-      
+
 
     }
 }

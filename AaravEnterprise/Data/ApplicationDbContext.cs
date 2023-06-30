@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AaravEnterprise.Models;
+﻿using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace AaravEnterprise.DataAccess
 {

@@ -1,8 +1,6 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -15,7 +13,7 @@ namespace AaravEnterprise.Controllers
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
-            _dbContext= dbContext;
+            _dbContext = dbContext;
             _logger = logger;
         }
 

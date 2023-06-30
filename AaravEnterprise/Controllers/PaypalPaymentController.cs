@@ -24,9 +24,9 @@ namespace AaravEnterprise.Controllers
         private readonly CustomEmailSender _emailSender;
         public IConfiguration Configuration { get; }
         private readonly ApplicationDbContext _dbContext;
-        Cart cart;
-        AaravEnterprise.Models.Order FinalOrder;
-        OrderDetails OrderDetails;
+        private readonly Cart cart;
+        private AaravEnterprise.Models.Order FinalOrder;
+        private OrderDetails OrderDetails;
         public PaypalPaymentController(IConfiguration configuration, ApplicationDbContext dbContext, CustomEmailSender emailSender)
         {
             _emailSender = emailSender;
@@ -44,23 +44,23 @@ namespace AaravEnterprise.Controllers
         {
 
             List<CartViewModel> cartViewModels = new List<CartViewModel>();
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ClaimsIdentity claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var query = from C in _dbContext.Cart
-                        join S in _dbContext.Services on C.ServiceId equals S.Id
-                        join P in _dbContext.Package on C.PackageId equals P.Id
-                        where C.ApplicationUserId == userId
-                        select new CartViewModel
-                        {
-                            CartId = C.CartId,
-                            ServiceId = S.Id,
-                            ServiceTitle = S.ServiceTitle,
-                            PackageTitle = P.PackageTitle,
-                            Amount = C.Amount
-                        };
+            IQueryable<CartViewModel> query = from C in _dbContext.Cart
+                                              join S in _dbContext.Services on C.ServiceId equals S.Id
+                                              join P in _dbContext.Package on C.PackageId equals P.Id
+                                              where C.ApplicationUserId == userId
+                                              select new CartViewModel
+                                              {
+                                                  CartId = C.CartId,
+                                                  ServiceId = S.Id,
+                                                  ServiceTitle = S.ServiceTitle,
+                                                  PackageTitle = P.PackageTitle,
+                                                  Amount = C.Amount
+                                              };
             ViewBag.CartItemsForUser = query.ToList();
-            var total = query.Sum(p => p.Amount);
+            int total = query.Sum(p => p.Amount);
             ViewBag.Total = total;
 
             #region local_variables
@@ -98,7 +98,7 @@ namespace AaravEnterprise.Controllers
                     string ordertotal = Convert.ToString(ViewBag.Total);
                     PayPalHttp.HttpResponse response = await myPaypalPayment.createOrder(payPalSetup, cartViewModels, ordertotal);
 
-                    var statusCode = response.StatusCode;
+                    HttpStatusCode statusCode = response.StatusCode;
                     PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
                     foreach (PayPalCheckoutSdk.Orders.LinkDescription link in result.Links)
                     {
@@ -109,7 +109,9 @@ namespace AaravEnterprise.Controllers
                     }
 
                     if (!string.IsNullOrEmpty(payPalSetup.ApproveUrl))
+                    {
                         return Redirect(payPalSetup.ApproveUrl);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -127,12 +129,15 @@ namespace AaravEnterprise.Controllers
                 PayPalHttp.HttpResponse response = await myPaypalPayment.captureOrder(payPalSetup);
                 try
                 {
-                    var statusCode = response.StatusCode;
+                    HttpStatusCode statusCode = response.StatusCode;
                     PayPalCheckoutSdk.Orders.Order result = response.Result<PayPalCheckoutSdk.Orders.Order>();
 
                     //update view bag so user/payer gets to know the status
                     if (result.Status.Trim().ToUpper() == "COMPLETED")
+                    {
                         cartViewModels = (List<CartViewModel>)ViewBag.CartItemsForUser;
+                    }
+
                     SendOrderConfirmationEmail(userId, total, result.Id, cartViewModels);
                     CompleteOrder(userId, total, result.Id, cartViewModels);
                     paymentResultList.Add("Payment Successful. Thank you.");
@@ -161,7 +166,7 @@ namespace AaravEnterprise.Controllers
 
         public void SendOrderConfirmationEmail(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
         {
-            var objUser = _dbContext.ApplicationUser.FirstOrDefault(c => c.Id == userId);
+            ApplicationUser objUser = _dbContext.ApplicationUser.FirstOrDefault(c => c.Id == userId);
 
             StringBuilder emailBody = new StringBuilder();
             emailBody.Append("<html>");
@@ -170,7 +175,7 @@ namespace AaravEnterprise.Controllers
             emailBody.Append("</head>");
             emailBody.Append("<body>");
             emailBody.Append("<h1>Order Confirmation</h1>");
-            emailBody.Append("<p>Dear "+ objUser.Name + ",</p>");
+            emailBody.Append("<p>Dear " + objUser.Name + ",</p>");
             emailBody.Append("<p>Thank you for your order! We are pleased to confirm that your order has been received and is being processed.</p>");
             emailBody.Append("<h2>Order Details</h2>");
             emailBody.Append("<table>");
@@ -182,20 +187,20 @@ namespace AaravEnterprise.Controllers
             emailBody.Append("</tr>");
             emailBody.Append("</thead>");
             emailBody.Append("<tbody>");
-            foreach (var cartItem in cartViewModels)
+            foreach (CartViewModel cartItem in cartViewModels)
             {
 
                 emailBody.Append("<tr>");
-                emailBody.Append("<td>"+ cartItem.ServiceTitle + "</td>");
+                emailBody.Append("<td>" + cartItem.ServiceTitle + "</td>");
                 emailBody.Append("<td>" + cartItem.PackageTitle + "</td>");
                 emailBody.Append("<td>" + cartItem.Amount + "</td>");
                 emailBody.Append("</tr>");
             }
             emailBody.Append("</tbody>");
             emailBody.Append("</table>");
-            emailBody.Append("<p>Total Amount: USD "+ orderAmount + " </p>");
+            emailBody.Append("<p>Total Amount: USD " + orderAmount + " </p>");
             emailBody.Append("<h2>Payment Information</h2>");
-            emailBody.Append("<p>Payment Reference Number: "+ paymentId + "</p>");
+            emailBody.Append("<p>Payment Reference Number: " + paymentId + "</p>");
             emailBody.Append("<p>If you have any questions regarding your order, please feel free to contact our customer support team.</p>");
             emailBody.Append("<p>Thank you for shopping with us!</p>");
             emailBody.Append("<p>Sincerely,<br> Aarav Enterprise</p>");
@@ -207,18 +212,20 @@ namespace AaravEnterprise.Controllers
 
         public void CompleteOrder(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
         {
-            using (var transaction = _dbContext.Database.BeginTransaction())
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    FinalOrder = new Models.Order();
-                    FinalOrder.UserId = userId;
-                    FinalOrder.OrderDate = DateTime.UtcNow;
-                    FinalOrder.TotalAmount = orderAmount;
-                    FinalOrder.OrderStatus = "Completed";
-                    FinalOrder.PaymentStatus = "Completed";
-                    FinalOrder.PaymentDate = DateTime.UtcNow;
-                    FinalOrder.PaymentId = paymentId;
+                    FinalOrder = new Models.Order
+                    {
+                        UserId = userId,
+                        OrderDate = DateTime.UtcNow,
+                        TotalAmount = orderAmount,
+                        OrderStatus = "Completed",
+                        PaymentStatus = "Completed",
+                        PaymentDate = DateTime.UtcNow,
+                        PaymentId = paymentId
+                    };
 
                     _dbContext.Order.Add(FinalOrder);
                     _dbContext.SaveChanges();
@@ -226,7 +233,7 @@ namespace AaravEnterprise.Controllers
 
                     OrderDetails = new OrderDetails();
 
-                    foreach (var cartItem in cartViewModels)
+                    foreach (CartViewModel cartItem in cartViewModels)
                     {
                         int orderId = orderID;
                         int serviceId = cartItem.ServiceId;
@@ -249,12 +256,12 @@ namespace AaravEnterprise.Controllers
                                         ,{total})
 
                                          SET IDENTITY_INSERT [OrderDetails] ON;";
-                        var result = _dbContext.Database.ExecuteSqlRaw(query);
+                        int result = _dbContext.Database.ExecuteSqlRaw(query);
                     }
 
-                    foreach (var cartItem in cartViewModels)
+                    foreach (CartViewModel cartItem in cartViewModels)
                     {
-                        var rowToRemove = _dbContext.Cart.Find(cartItem.CartId);
+                        Cart rowToRemove = _dbContext.Cart.Find(cartItem.CartId);
                         if (rowToRemove != null)
                         {
                             _dbContext.Cart.Remove(rowToRemove);
@@ -263,7 +270,7 @@ namespace AaravEnterprise.Controllers
                     _dbContext.SaveChanges();
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
                 }
@@ -276,7 +283,7 @@ namespace AaravEnterprise.Controllers
     /// </summary>
     public class MyPaypalPayment
     {
-        List<CartViewModel> cartItemList;
+        private List<CartViewModel> cartItemList;
         /// <summary>
         /// Initiates Paypal client. Must ensure correct environment.
         /// </summary>
@@ -309,8 +316,8 @@ namespace AaravEnterprise.Controllers
         {
             PayPalHttp.HttpResponse response = null;
             cartItemList = cartViewModels;
-            var itemList = new List<Item>();
-            foreach (var cartItem in cartItemList)
+            List<Item> itemList = new List<Item>();
+            foreach (CartViewModel cartItem in cartItemList)
             {
                 itemList.Add(new Item
                 {
@@ -332,7 +339,7 @@ namespace AaravEnterprise.Controllers
                 // Construct a request object and set desired parameters
                 // Here, OrdersCreateRequest() creates a POST request to /v2/checkout/orders
                 #region order_creation
-                var order = new OrderRequest()
+                OrderRequest order = new OrderRequest()
                 {
                     CheckoutPaymentIntent = "CAPTURE",
                     PurchaseUnits = new List<PurchaseUnitRequest>()
@@ -374,14 +381,14 @@ namespace AaravEnterprise.Controllers
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                 // Call API with your client and get a response for your call
-                var request = new OrdersCreateRequest();
+                OrdersCreateRequest request = new OrdersCreateRequest();
                 request.Prefer("return=representation");
                 request.RequestBody(order);
                 PayPalHttpClient paypalHttpClient = client(paypalSetup);
                 response = await paypalHttpClient.Execute(request);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -395,7 +402,7 @@ namespace AaravEnterprise.Controllers
         {
             // Construct a request object and set desired parameters
             // Replace ORDER-ID with the approved order id from create order
-            var request = new OrdersCaptureRequest(paypalSetup.PayerApprovedOrderId);
+            OrdersCaptureRequest request = new OrdersCaptureRequest(paypalSetup.PayerApprovedOrderId);
             request.RequestBody(new OrderActionRequest());
             PayPalHttpClient paypalHttpClient = client(paypalSetup);
             PayPalHttp.HttpResponse response = await paypalHttpClient.Execute(request);
@@ -407,35 +414,35 @@ namespace AaravEnterprise.Controllers
             /// <summary>
             /// Provide value sandbox for testing,  provide value live for real money
             /// </summary>
-            public String Environment { get; set; }
+            public string Environment { get; set; }
             /// <summary>
             /// Client id as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
             /// Use sandbox accounts for sandbox testing
             /// </summary>
-            public String ClientId { get; set; }
+            public string ClientId { get; set; }
             /// <summary>
             /// Secret as provided by Paypal on dashboard. Ensure you use correct value based on your environment selection
             /// Use sandbox accounts for sandbox testing
             /// </summary>
-            public String Secret { get; set; }
+            public string Secret { get; set; }
 
             /// <summary>
             /// This is the URL that you will pass to paypal which paypal will use to redirect payer back to your website.
             /// So essentially it is the same controller URL that you must pass
             /// </summary>
-            public String RedirectUrl { get; set; }
+            public string RedirectUrl { get; set; }
 
             /// <summary>
             /// Once order is created on Paypal, it redirects control to your app with a URL that shows order details. Your website must take the payer to this page
             /// so the payer approved the payment. Store this URL in this property
             /// </summary>
-            public String ApproveUrl { get; set; }
+            public string ApproveUrl { get; set; }
 
             /// <summary>
             /// When paypal redirects control to your website it provides a Approved Order ID which we then pass it back to paypal to execute the order.
             /// Store this approved order ID in this property
             /// </summary>
-            public String PayerApprovedOrderId { get; set; }
+            public string PayerApprovedOrderId { get; set; }
         }
     }
 }

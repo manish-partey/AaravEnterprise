@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AaravEnterprise.Controllers
 {
@@ -10,20 +9,20 @@ namespace AaravEnterprise.Controllers
     {
         private readonly CustomEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        string toEmail;
-        string subj;
-        StringBuilder MessageBody = new StringBuilder();
+        private string toEmail;
+        private string subj;
+        private StringBuilder MessageBody = new StringBuilder();
         public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration)
         {
-            _emailSender  = emailSender;
+            _emailSender = emailSender;
             _configuration = configuration;
         }
 
         public IActionResult SendEmail(string name, string email, string subject, string emailBody)
         {
-             toEmail = email;
-             subj = subject;             
-             
+            toEmail = email;
+            subj = subject;
+
             MessageBody.Append(emailBody);
 
             _emailSender.SendEmail("support@araventerprise.com", subject, MessageBody.ToString());

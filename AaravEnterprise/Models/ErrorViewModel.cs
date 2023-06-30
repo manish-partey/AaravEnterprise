@@ -1,5 +1,3 @@
-using System;
-
 namespace AaravEnterprise.Models
 {
     public class ErrorViewModel

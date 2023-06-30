@@ -32,7 +32,7 @@ namespace AaravEnterprise
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
-           
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
@@ -62,11 +62,11 @@ namespace AaravEnterprise
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
-            
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

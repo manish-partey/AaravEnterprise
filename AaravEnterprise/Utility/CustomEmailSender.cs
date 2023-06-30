@@ -1,6 +1,6 @@
-﻿using System.Net.Mail;
-using AaravEnterprise.Models;
+﻿using AaravEnterprise.Models;
 using Microsoft.Extensions.Options;
+using System.Net.Mail;
 
 namespace AaravEnterprise.Utility
 {
@@ -14,7 +14,7 @@ namespace AaravEnterprise.Utility
 
         public void SendEmail(string toAddress, string subject, string body)
         {
-            using (var mailMessage = new MailMessage())
+            using (MailMessage mailMessage = new MailMessage())
             {
                 mailMessage.From = new MailAddress(_smtpSettings.Username);
                 mailMessage.To.Add(toAddress);
@@ -23,7 +23,7 @@ namespace AaravEnterprise.Utility
                 mailMessage.Body = body;
                 mailMessage.IsBodyHtml = true;
 
-                using (var smtpClient = new SmtpClient(_smtpSettings.SmtpServer, _smtpSettings.Port))
+                using (SmtpClient smtpClient = new SmtpClient(_smtpSettings.SmtpServer, _smtpSettings.Port))
                 {
                     smtpClient.Credentials = new System.Net.NetworkCredential(_smtpSettings.Username, _smtpSettings.Password);
                     smtpClient.Send(mailMessage);

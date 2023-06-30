@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AaravEnterprise.Models
 {
@@ -16,7 +11,7 @@ namespace AaravEnterprise.Models
         public int ServiceId { get; set; }
         [ForeignKey("ServiceId")]
         [ValidateNever]
-        public Services Service { get; set; }        
+        public Services Service { get; set; }
         public int PackageId { get; set; }
         [ForeignKey("PackageId")]
         [ValidateNever]

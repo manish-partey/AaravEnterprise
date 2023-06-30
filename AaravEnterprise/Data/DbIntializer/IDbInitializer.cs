@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AaravEnterprise.Data.DbIntializer
+﻿namespace AaravEnterprise.Data.DbIntializer
 {
     public interface IDbInitializer
     {

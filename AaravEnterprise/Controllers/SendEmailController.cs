@@ -45,11 +45,10 @@ namespace AaravEnterprise.Controllers
 
         public IActionResult SendEmailContact(string name, string email, string subject, string emailBody)
         {
-            toEmail = email;
-            subj = subject;
-
+            toEmail = "support@araventerprise.com";            
+            MessageBody.Append("Name : " + name + "<br/>");
+            MessageBody.Append("Email : " + email + "<br/>");            
             MessageBody.Append(emailBody);
-
             _emailSender.SendEmail("support@araventerprise.com", subject, MessageBody.ToString());
 
             MessageBody = new StringBuilder();

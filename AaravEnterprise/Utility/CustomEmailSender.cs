@@ -18,7 +18,7 @@ namespace AaravEnterprise.Utility
             {
                 mailMessage.From = new MailAddress(_smtpSettings.Username);
                 mailMessage.To.Add(toAddress);
-                mailMessage.CC.Add(_smtpSettings.Username);
+               // mailMessage.CC.Add(_smtpSettings.Username);
                 mailMessage.Subject = subject;
                 mailMessage.Body = body;
                 mailMessage.IsBodyHtml = true;

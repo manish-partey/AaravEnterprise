@@ -9,8 +9,7 @@ namespace AaravEnterprise.Controllers
     {
         private readonly CustomEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        private string toEmail;
-        private string subj;
+        private string toEmail, fromEmail, subj;
         private StringBuilder MessageBody = new StringBuilder();
         public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration)
         {
@@ -18,7 +17,33 @@ namespace AaravEnterprise.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult SendEmail(string name, string email, string subject, string emailBody)
+        public IActionResult SendEmail(string name, string email, string phone, string emailBody)
+        {
+            toEmail = "support@araventerprise.com";            
+            fromEmail = email;
+            MessageBody.Append("Name : " + name + "<br/>");
+            MessageBody.Append("Email : " + email + "<br/>");
+            MessageBody.Append("Phone : " + phone + "<br/>");
+            MessageBody.Append(emailBody);
+            _emailSender.SendEmail(toEmail, "Product Enquiry by " + name, MessageBody.ToString());
+            MessageBody = new StringBuilder();
+            MessageBody.Append("Dear " + name);
+            MessageBody.Append("<br />");
+            MessageBody.Append("Thank you for your Email");
+            MessageBody.Append("<br />");
+            MessageBody.Append("We you get back to you shortly !");
+            MessageBody.Append("<br />");
+            MessageBody.Append("Thank You");
+            MessageBody.Append("<br />");
+            MessageBody.Append("Aarav Enterprise");
+            _emailSender.SendEmail(email, "Automatic Reply - Please do not reply", MessageBody.ToString());
+            TempData["success"] = "Thank you, We you get back to you shortly !";
+            // Get the current controller and action names
+            // Redirect to the current URL
+            return Redirect("/");
+        }
+
+        public IActionResult SendEmailContact(string name, string email, string subject, string emailBody)
         {
             toEmail = email;
             subj = subject;
@@ -26,6 +51,7 @@ namespace AaravEnterprise.Controllers
             MessageBody.Append(emailBody);
 
             _emailSender.SendEmail("support@araventerprise.com", subject, MessageBody.ToString());
+
             MessageBody = new StringBuilder();
             MessageBody.Append("Dear " + name);
             MessageBody.Append("<br />");
@@ -40,5 +66,7 @@ namespace AaravEnterprise.Controllers
             TempData["success"] = "Thank you, We you get back to you shortly !";
             return RedirectToAction("Contact", "Home");
         }
+
+
     }
 }

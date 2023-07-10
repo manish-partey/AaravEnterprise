@@ -158,10 +158,31 @@
                                                     <div class="col-sm-12">
                                                         <input type="text" name="subject" id="subject" placeholder="Subject" class="inptFld" required />
                                                     </div>
+
                                                     <div class="col-12">
                                                         <textarea class="inptFld" name="emailBody" id="emailBody" placeholder="Your Message..." required></textarea>
                                                     </div>
                                                     <div class="col-12">
+                                                        <dnt-captcha asp-captcha-generator-max="999999"
+                                                                     asp-captcha-generator-min="111111"
+                                                                     asp-captcha-generator-language="English"
+                                                                     asp-captcha-generator-display-mode="ShowDigits"
+                                                                     asp-use-relative-urls="true"
+                                                                     asp-placeholder="Security code as a number"
+                                                                     asp-validation-error-message="Please enter the security code as a number."
+                                                                     asp-font-name="Tahoma"
+                                                                     asp-font-size="30"
+                                                                     asp-fore-color="#333333"
+                                                                     asp-back-color="#FCF6F5FF"
+                                                                     asp-text-box-class="form-control"
+                                                                     asp-text-box-template="<div class='input-group'><span class='input-group-text'><span class='bi-lock'></span></span>{0}</div>"
+                                                                     asp-validation-message-class="text-danger"
+                                                                     asp-refresh-button-class="bi-arrow-counterclockwise btn-lg"
+                                                                     asp-show-refresh-button="true"
+                                                                     asp-dir="ltr" />
+                                                    </div>
+                                                    <div class="col-12">
+                                                        
                                                         <input type="submit" name="submit" value="SUBMIT" class="inptBtn" />
                                                     </div>
                                                 </div>
@@ -227,8 +248,28 @@
                                     <input type="email" name="email" id="email" placeholder="Email">
                                     <input type="number" name="phone" id="phone" placeholder="Mobile No.">
                                     <textarea name="emailBody" id="emailBody" cols="30" rows="7" placeholder="Message"></textarea>
+                                    <dnt-captcha asp-captcha-generator-max="999999"
+                                                 asp-captcha-generator-min="111111"
+                                                 asp-captcha-generator-language="English"
+                                                 asp-captcha-generator-display-mode="ShowDigits"
+                                                 asp-use-relative-urls="true"
+                                                 asp-placeholder="Security code as a number"
+                                                 asp-validation-error-message="Please enter the security code as a number."
+                                                 asp-font-name="Tahoma"
+                                                 asp-font-size="30"
+                                                 asp-fore-color="#333333"
+                                                 asp-back-color="#FCF6F5FF"
+                                                 asp-text-box-class="form-control"
+                                                 asp-text-box-template="<div class='input-group'><span class='input-group-text'><span class='bi-lock'></span></span>{0}</div>"
+                                                 asp-validation-message-class="text-danger"
+                                                 asp-refresh-button-class="bi-arrow-counterclockwise btn-lg"
+                                                 asp-show-refresh-button="true"
+                                                 asp-dir="ltr" />
+                                    @if (TempData["WrongCaptcha"] != null)
+                                    { 
+                                        <span class="text-danger alert alert-danger">@TempData["WrongCaptcha"]</span>
+                                    }
                                     <button type="submit" name="submit" class="cta">Submit</button>
-                                    
                                 </form>
                             </div>
                         </div>

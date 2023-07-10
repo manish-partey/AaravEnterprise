@@ -2,6 +2,7 @@ using AaravEnterprise.Data.DbIntializer;
 using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
+using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ namespace AaravEnterprise
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
-
+            services.AddDNTCaptcha(options => { options.UseCookieStorageProvider().ShowThousandsSeparators(false); options.WithEncryptionKey("*zP7CsvKksW2e4XCW43f@vnXlH3zYm"); });
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";

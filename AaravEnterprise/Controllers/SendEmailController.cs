@@ -76,7 +76,7 @@ namespace AaravEnterprise.Controllers
                 return RedirectToAction("Contact", "Home");
             }
             else
-            {                
+            {
                 TempData["ErrorMessage"] = "Please Validate Captcha!";
                 return RedirectToAction("Contact", "Home");
             }

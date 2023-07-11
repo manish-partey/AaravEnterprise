@@ -169,7 +169,12 @@
                                                     @TempData["ErrorMessage"]
                                                 </div>
                                             }
-
+                                            @if (TempData.ContainsKey("ValidCaptcha"))
+                                            {
+                                                <div class="alert alert-primary">
+                                                    @TempData["ValidCaptcha"]
+                                                </div>
+                                            }
                                             <div class="col-12">
                                                 <recaptcha language="en-GB" />
                                             </div>
@@ -239,6 +244,12 @@
                                         {
                                             <div class="alert alert-danger">
                                                 @TempData["ErrorMessage"]
+                                            </div>
+                                        }
+                                        @if (TempData.ContainsKey("ValidCaptcha"))
+                                        {
+                                            <div class="alert alert-primary">
+                                                @TempData["ValidCaptcha"]
                                             </div>
                                         }
                                         <input type="text" name="name" id="name" placeholder="Name">

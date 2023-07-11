@@ -149,6 +149,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <form asp-action="SendEmailContact" asp-controller="SendEmail" class="contFrm" method="POST">
+                                        
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <input type="text" name="name" id="name" placeholder="Your Name" class="inptFld" required />
@@ -159,15 +160,20 @@
                                             <div class="col-sm-12">
                                                 <input type="text" name="subject" id="subject" placeholder="Subject" class="inptFld" required />
                                             </div>
-
                                             <div class="col-12">
                                                 <textarea class="inptFld" name="emailBody" id="emailBody" placeholder="Your Message..." required></textarea>
                                             </div>
+                                            @if (TempData.ContainsKey("ErrorMessage"))
+                                            {
+                                                <div class="alert alert-danger">
+                                                    @TempData["ErrorMessage"]
+                                                </div>
+                                            }
+
                                             <div class="col-12">
                                                 <recaptcha language="en-GB" />
                                             </div>
                                             <div class="col-12">
-
                                                 <input type="submit" name="submit" value="SUBMIT" class="inptBtn" />
                                             </div>
                                         </div>
@@ -229,6 +235,12 @@
                                 </div>
                                 <div class="form-section">
                                     <form asp-action="SendEmail" asp-controller="SendEmail" class="contFrm" method="POST">
+                                        @if (TempData.ContainsKey("ErrorMessage"))
+                                        {
+                                            <div class="alert alert-danger">
+                                                @TempData["ErrorMessage"]
+                                            </div>
+                                        }
                                         <input type="text" name="name" id="name" placeholder="Name">
                                         <input type="email" name="email" id="email" placeholder="Email">
                                         <input type="number" name="phone" id="phone" placeholder="Mobile No.">

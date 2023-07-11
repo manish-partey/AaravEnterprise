@@ -47,7 +47,7 @@ namespace AaravEnterprise.Controllers
             }
             else
             {
-                TempData["WrongCaptcha"] = "Please enter correct security code!";
+                TempData["ErrorMessage"] = "Please Validate Captcha!";
                 return RedirectToAction("Contact", "Home");
             }
         }
@@ -76,8 +76,8 @@ namespace AaravEnterprise.Controllers
                 return RedirectToAction("Contact", "Home");
             }
             else
-            {
-                TempData["WrongCaptcha"] = "Please enter correct security code!";
+            {                
+                TempData["ErrorMessage"] = "Please Validate Captcha!";
                 return RedirectToAction("Contact", "Home");
             }
         }

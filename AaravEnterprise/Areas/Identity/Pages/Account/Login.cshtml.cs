@@ -74,8 +74,13 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            if (ModelState.IsValid && !string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
+            if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
+                {
+                    ModelState.AddModelError(string.Empty, "Please Validate Captcha!");
+                    return Page();
+                }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);

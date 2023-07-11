@@ -104,8 +104,13 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid && !string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
+            if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
+                {
+                    ModelState.AddModelError(string.Empty, "Please Validate Captcha!");
+                    return Page();
+                }
                 ApplicationUser user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, Name = Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode };
                 IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

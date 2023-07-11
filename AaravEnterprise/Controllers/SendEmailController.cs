@@ -1,8 +1,8 @@
 ﻿using AaravEnterprise.Utility;
+using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Text;
-using AspNetCore.ReCaptcha;
 
 namespace AaravEnterprise.Controllers
 {
@@ -12,11 +12,11 @@ namespace AaravEnterprise.Controllers
         private readonly IConfiguration _configuration;
         private readonly IReCaptchaService _reCaptchaService;
         private string toEmail, fromEmail;
-        private StringBuilder MessageBody = new StringBuilder();        
-        public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration, IReCaptchaService reCaptchaService )
+        private StringBuilder MessageBody = new StringBuilder();
+        public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration, IReCaptchaService reCaptchaService)
         {
             _emailSender = emailSender;
-            _configuration = configuration;           
+            _configuration = configuration;
             _reCaptchaService = reCaptchaService;
         }
 
@@ -52,7 +52,7 @@ namespace AaravEnterprise.Controllers
             }
         }
         public IActionResult SendEmailContact(string name, string email, string subject, string emailBody)
-        {            
+        {
             if (!string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
             {
                 toEmail = "support@araventerprise.com";

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AspNetCore.ReCaptcha;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCore.ReCaptcha;
 namespace AaravEnterprise.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
@@ -20,7 +20,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
         private readonly IReCaptchaService _reCaptchaService;
         public LoginModel(SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager, 
+            UserManager<IdentityUser> userManager,
             IReCaptchaService reCaptchaService)
         {
             _userManager = userManager;

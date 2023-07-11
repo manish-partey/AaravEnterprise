@@ -2,6 +2,7 @@ using AaravEnterprise.Data.DbIntializer;
 using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
+using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using AspNetCore.ReCaptcha;
 
 namespace AaravEnterprise
 {
@@ -36,7 +36,7 @@ namespace AaravEnterprise
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
             string sectionName = _environment.IsDevelopment() ? "Localhost" : "Domain";
-            var appSettingsSection = Configuration.GetSection("RecaptchaSettings").GetSection(sectionName);
+            IConfigurationSection appSettingsSection = Configuration.GetSection("RecaptchaSettings").GetSection(sectionName);
             services.AddReCaptcha(appSettingsSection);
             services.ConfigureApplicationCookie(options =>
             {

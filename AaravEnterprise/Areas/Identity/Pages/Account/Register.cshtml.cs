@@ -1,5 +1,6 @@
 ﻿using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
+using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using AspNetCore.ReCaptcha;
 
 namespace AaravEnterprise.Areas.Identity.Pages.Account
 {

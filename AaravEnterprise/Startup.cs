@@ -2,7 +2,6 @@ using AaravEnterprise.Data.DbIntializer;
 using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
-using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,16 +11,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using AspNetCore.ReCaptcha;
+
 namespace AaravEnterprise
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _environment;
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -33,7 +35,9 @@ namespace AaravEnterprise
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
-            services.AddDNTCaptcha(options => { options.UseCookieStorageProvider().ShowThousandsSeparators(false); options.WithEncryptionKey("*zP7CsvKksW2e4XCW43f@vnXlH3zYm"); });
+            string sectionName = _environment.IsDevelopment() ? "Localhost" : "Domain";
+            var appSettingsSection = Configuration.GetSection("RecaptchaSettings").GetSection(sectionName);
+            services.AddReCaptcha(appSettingsSection);
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";

@@ -1,6 +1,5 @@
 ﻿@page
 @model LoginModel
-
 @{
     ViewData["Title"] = "Log in";
 }
@@ -17,6 +16,7 @@
                     <input asp-for="Input.Email" class="form-control" />
                     <label asp-for="Input.Password"></label>
                     <input asp-for="Input.Password" class="form-control" />
+                    <recaptcha language="en-GB" />
                 </div>
                 <div class="login-form-inner">
                     <button type="submit" class="btn btn-primary ms-auto login-button">Login</button>

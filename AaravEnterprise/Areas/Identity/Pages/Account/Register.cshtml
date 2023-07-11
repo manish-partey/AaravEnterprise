@@ -58,6 +58,9 @@
                     <input asp-for="Input.PostalCode" class="form-control" />
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
+                <div class="login-form-inner">
+                    <recaptcha language="en-GB" />
+                </div>
                 <button type="submit" class="btn btn-primary register-button">Register</button>
             </form>
         </div>

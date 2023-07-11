@@ -1,8 +1,8 @@
 ﻿using AaravEnterprise.Utility;
-using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Text;
+using AspNetCore.ReCaptcha;
 
 namespace AaravEnterprise.Controllers
 {
@@ -10,23 +10,20 @@ namespace AaravEnterprise.Controllers
     {
         private readonly CustomEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        private string toEmail, fromEmail, subj;
-        private StringBuilder MessageBody = new StringBuilder();
-        public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration, IDNTCaptchaValidatorService dNTCaptchaValidatorService )
+        private readonly IReCaptchaService _reCaptchaService;
+        private string toEmail, fromEmail;
+        private StringBuilder MessageBody = new StringBuilder();        
+        public SendEmailController(CustomEmailSender emailSender, IConfiguration configuration, IReCaptchaService reCaptchaService )
         {
             _emailSender = emailSender;
-            _configuration = configuration;
-            DNTCaptchaValidatorService = dNTCaptchaValidatorService;
+            _configuration = configuration;           
+            _reCaptchaService = reCaptchaService;
         }
 
-        public IDNTCaptchaValidatorService DNTCaptchaValidatorService { get; }
-
-        //[ValidateDNTCaptcha(ErrorMessage ="Please enter correct security code", CaptchaGeneratorLanguage =Language.English, CaptchaGeneratorDisplayMode =DisplayMode.ShowDigits)]
         public IActionResult SendEmail(string name, string email, string phone, string emailBody)
         {
-            if (DNTCaptchaValidatorService.HasRequestValidCaptchaEntry(Language.English, DisplayMode.ShowDigits))
+            if (!string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
             {
-
                 toEmail = "support@araventerprise.com";
                 fromEmail = email;
                 MessageBody.Append("Name : " + name + "<br/>");
@@ -54,11 +51,9 @@ namespace AaravEnterprise.Controllers
                 return RedirectToAction("Contact", "Home");
             }
         }
-
-       // [ValidateDNTCaptcha(ErrorMessage = "Please enter correct security code", CaptchaGeneratorLanguage = Language.English, CaptchaGeneratorDisplayMode = DisplayMode.ShowDigits)]
         public IActionResult SendEmailContact(string name, string email, string subject, string emailBody)
-        {
-            if (DNTCaptchaValidatorService.HasRequestValidCaptchaEntry(Language.English, DisplayMode.ShowDigits))
+        {            
+            if (!string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
             {
                 toEmail = "support@araventerprise.com";
                 MessageBody.Append("Name : " + name + "<br/>");

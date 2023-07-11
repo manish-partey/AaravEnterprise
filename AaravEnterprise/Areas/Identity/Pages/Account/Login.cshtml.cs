@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-
+using AspNetCore.ReCaptcha;
 namespace AaravEnterprise.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
@@ -17,14 +17,16 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
+        private readonly IReCaptchaService _reCaptchaService;
         public LoginModel(SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager, 
+            IReCaptchaService reCaptchaService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _reCaptchaService = reCaptchaService;
         }
 
         [BindProperty]
@@ -72,7 +74,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !string.IsNullOrEmpty(Request.Form["g-recaptcha-response"]))
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true

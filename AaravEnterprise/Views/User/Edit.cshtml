@@ -1,0 +1,99 @@
+﻿@model ApplicationUser
+
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Edit User</h2>
+    </div>
+    <div class="row">
+        <form method="post">
+            <table class="table table-striped">
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <input asp-for="Id" hidden />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <label asp-for="Name" class="ms-2"></label>
+                        </td>
+                        <td>
+                            <input asp-for="Name" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="Email" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="Email" type="email" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="PhoneNumber" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="StreetAddress" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="StreetAddress" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="City" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="City" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="State" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="State" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="PostalCode" class="ms-2 text-muted"></label>
+                        </td>
+                        <td>
+                            <input asp-for="PostalCode" type="number" class="form-control border-0 shadow" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary register-button">Update</button>
+                            <a asp-controller="User" asp-action="Index" class="btn btn-dange deletelink">
+                                Back to List
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons  lists   table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough |  align lineheight | numlist bullist indent outdent',
+        });
+    </script>
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

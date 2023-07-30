@@ -1,0 +1,39 @@
+﻿@model List<ApplicationUser>
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Users</h2>
+    </div>    
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">City</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Edit</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td scope="row"> @item.Name</td>
+                    <td>@item.Email</td>
+                    <td>@item.PhoneNumber</td>
+                    <td> @item.City </td>
+                    <td> @item.State </td>
+                    <td>
+                        <a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2 admin-button">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>      
+    </div>
+
+</div>    

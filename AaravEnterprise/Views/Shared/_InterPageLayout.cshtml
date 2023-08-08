@@ -60,6 +60,19 @@
                                         </ul>
                                     </div>
                                 </li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0)" class="dropbtn">Order Management</a>
+                                    <div class="dropdown-content">
+                                        <ul role="list">
+                                            <li>
+                                                <a asp-controller="CompletedOrder" asp-action="Index">Completed Orders</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="InCompletedOrder" asp-action="Index">In-Completed Orders</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
                                 <li><a asp-controller="User" asp-action="Index">Users</a></li>
                             }
                             else

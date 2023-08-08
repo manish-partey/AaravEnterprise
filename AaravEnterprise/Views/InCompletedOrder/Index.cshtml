@@ -1,0 +1,40 @@
+﻿@model List<AaravEnterprise.ViewModel.UserOrderViewModel>
+@{
+    ViewData["Title"] = "InCompleted Order";
+    List<Order> objOrder = ViewBag.UserOrder;
+}
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">InCompleted Orders</h2>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Order Amount</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var userOrder in Model)
+                {
+                <tr>
+                    <td scope="row"> @userOrder.CustName</td>
+                    <td scope="row"> @userOrder.CustEmail</td>
+                    <td scope="row"> @userOrder.CustPhoneNumber</td>
+                    <td scope="row"> @userOrder.TotalAmount</td>
+                    <td>
+                        <a asp-controller="InCompletedOrder" asp-action="OrderDetails" asp-route-UserId="@userOrder.UserId" class="btn btn-primary mx-2 admin-button">
+                            <i class="bi bi-pencil-square"></i> Order Details
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

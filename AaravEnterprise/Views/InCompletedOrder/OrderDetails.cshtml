@@ -1,0 +1,49 @@
+﻿@using AaravEnterprise.ViewModel;
+@model List<CartViewModel>
+@{
+    ViewData["Title"] = "Order Details";
+}
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">Order Details</h2>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Service Name</th>
+                    <th scope="col">Package Selected</th>
+                    <th scope="col">Amount </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td scope="row"> @item.CartId</td>
+                        <td>@item.ServiceTitle</td>
+                        <td>@item.PackageTitle</td>
+                        <td> @item.Amount </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <table class="table">
+            <tbody>
+                <tr class="payment-checkout-text">
+                    <td>
+                        <strong>Total Amount Payble : </strong><strong>$@ViewBag.Total.ToString()</strong>
+                    </td>
+                </tr>
+                
+                    <tr style="padding-top:50px">
+                        <td style="float:right">
+                            <a asp-action="Index" asp-controller="InCompletedOrder" class="checkout-btn">Back to List</a>
+                        </td>
+                    </tr>
+                
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -11,7 +11,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone Number</th>
@@ -30,7 +29,7 @@
                     <td scope="row"> @userOrder.TotalAmount</td>
 
                     <td scope="row">
-                        <a href="https://paypal.me/AaravEnterprisesIN?amount=@userOrder.TotalAmount">Make Payment</a>
+                        <a href="https://paypal.me/AaravEnterprisesIN/@userOrder.TotalAmount" target="_blank">Make Payment</a>
                     </td>
                     <td scope="row">
                         <a asp-controller="InCompletedOrder" asp-action="OrderDetails" asp-route-UserId="@userOrder.UserId" class="btn btn-primary mx-2 admin-button">

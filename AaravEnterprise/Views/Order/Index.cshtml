@@ -1,8 +1,7 @@
 ﻿@using AaravEnterprise.ViewModel;
 @{
     ViewData["Title"] = "My Order";
-    List<Order> objOrder = ViewBag.UserOrder;
-    //List<OrderDetailViewModel> objOrderDetails = ViewBag.UserOrderDetails;
+    List<Order> objOrder = ViewBag.UserOrder;    
 }
 <div class="container">
     <div class="headings">
@@ -34,28 +33,5 @@
                 }
             </tbody>
         </table>
-
-        @*<div class="headings">
-            <h2 class="heading">Order Details</h2>
-        </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Service</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Amount </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in objOrderDetails)
-                {
-                    <tr>
-                        <td scope="row"> @item.ServiceTitle</td>
-                        <td scope="row"> @item.Quantity</td>
-                        <td scope="row"> @item.Amount</td>
-                    </tr>
-                }
-            </tbody>
-        </table>*@
     </div>
 </div>

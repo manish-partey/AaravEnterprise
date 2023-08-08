@@ -4,6 +4,12 @@
         <h2 class="heading">Users</h2>
     </div>    
     <div class="row">
+        @if (TempData.ContainsKey("PasswordChanged"))
+        {
+            <div class="alert alert-primary">
+                @TempData["PasswordChanged"]
+            </div>
+        }
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -13,27 +19,32 @@
                     <th scope="col">City</th>
                     <th scope="col">State</th>
                     <th scope="col">Edit</th>
+                    <th scope="col"></th>
 
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td scope="row"> @item.Name</td>
-                    <td>@item.Email</td>
-                    <td>@item.PhoneNumber</td>
-                    <td> @item.City </td>
-                    <td> @item.State </td>
-                    <td>
-                        <a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2 admin-button">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td scope="row"> @item.Name</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td> @item.City </td>
+                        <td> @item.State </td>
+                        <td>
+                            <a asp-controller="User" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2 admin-button">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-controller="User" asp-action="ChangePassword" class="btn btn-danger mx-2 admin-button">
+                                Reset Password
+                            </a>
+                        </td>
+                    </tr>
                 }
             </tbody>
-        </table>      
+        </table>
     </div>
-
 </div>    

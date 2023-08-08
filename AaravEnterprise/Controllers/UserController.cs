@@ -1,13 +1,21 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace AaravEnterprise.Controllers
 {
     public class UserController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailSender _emailSender;
         public IActionResult Index()
         {
             List<ApplicationUser> objUserList = _dbContext.ApplicationUser.ToList();
@@ -15,9 +23,11 @@ namespace AaravEnterprise.Controllers
             return View(objUserList);
         }
         private readonly ApplicationDbContext _dbContext;
-        public UserController(ApplicationDbContext dbContext)
+        public UserController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         public IActionResult Edit(string? Id)
@@ -66,6 +76,48 @@ namespace AaravEnterprise.Controllers
                 return RedirectToAction("Index");
             }
             return View(obj);
+        }
+
+
+        public  IActionResult ChangePassword(string? Email)
+        {
+
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
+            return View();
+        }
+       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return View(model);
+            }
+            else
+            {
+                model.Code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            }
+
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                TempData["PasswordChanged"] = "User Password Changed Successfully !";
+                return RedirectToAction("Index");
+            }
+
+            foreach (IdentityError error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
+            return View(model);
         }
     }
 }

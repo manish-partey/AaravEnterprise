@@ -155,333 +155,336 @@
             </div>
         </section>
 
-
-        <section section="OurServices">
-            <div class="container">
-                <div class="headings">
-                    <div class="subHeading">Our Services</div>
-                    <h2 class="heading">
-                        Managing your business <br>
-                        With our best service
-                    </h2>
-                </div>
-
-                <div class="grid">
-                    <ul role="list">
-                        @*@foreach (var item in dbContext.Services)
-                        {
-                            int i = 1;
-                            string strIconClass = "icon icon-" + i;
-                            string strImangeSrc = "~/assets/img/icon-" + i + ".png";
-
-
-                            await Context.Response.Body.WriteAsync(System.Text.Encoding.UTF8.GetBytes(strIconClass), 0, System.Text.Encoding.UTF8.GetBytes(strIconClass).Length);
-
-                            string htmlCode = @"<a asp-controller=""Service"" asp-action=""Index"" asp-route-Id=" + @item.Id + ">";
-                            htmlCode = htmlCode+ "<div class='grid-content'>";
-                            htmlCode = htmlCode + "<div class='"+@strIconClass+"'>";
-                            htmlCode = htmlCode + "<img src='" + @strImangeSrc + "' alt='' srcset=''>";
-                            htmlCode = htmlCode + "</div>";
-                            htmlCode = htmlCode + "<div class='grid-heading'>";
-                            htmlCode = htmlCode + @item.ServiceTitle;
-                            htmlCode = htmlCode + "</div>";
-                            htmlCode = htmlCode + "</div>";
-                            htmlCode = htmlCode + "</a>";
-                        <li>
-                            @Html.Raw(htmlCode)
-
-                        </li>
-                                i = i++;
-                            }*@
-                    <li>
-
-                        <a asp-controller="Service" asp-action="Index" asp-route-Id=1><div class='grid-content'><div class='icon icon-1'><img src='~/assets/img/icon-1.png' alt='' srcset=''></div><div class='grid-heading'>UX/UI Design Manish</div></div></a>
-                        <a href="#">
-                            <div class="grid-content">
-                                <div class="icon icon-1">
-                                    <img src="~/assets/img/icon-1.png" alt="" srcset="">
-                                </div>
-                                <div class="grid-heading">
-                                    UI/UX Design
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-2">
-                                        <img src="~/assets/img/icon-2.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        Media Marketing
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-3">
-                                        <img src="~/assets/img/icon-3.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        Content Solution
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-4">
-                                        <img src="~/assets/img/icon-4.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        Web Development
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-5">
-                                        <img src="~/assets/img/icon-5.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        Social Media Management
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <div class="grid-content">
-                                    <div class="icon icon-6">
-                                        <img src="~/assets/img/icon-6.png" alt="" srcset="">
-                                    </div>
-                                    <div class="grid-heading">
-                                        Upcoming Services
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section section="why-choose-us">
-
-            <div class="container">
-                <div class="flex-wrapper">
-                    <div class="left-col">
+        @if (Context.User.Identity.IsAuthenticated)
+        {
+            @if (Context.User.HasClaim(c => c.Value != SD.Role_Admin))
+            {
+                <section section="OurServices">
+                    <div class="container">
                         <div class="headings">
-
+                            <div class="subHeading">Our Services</div>
                             <h2 class="heading">
-                                Why Choose Us
+                                Managing your business <br>
+                                With our best service
                             </h2>
                         </div>
 
-                        <p>
-                            Make a decision that will boost your sales. Aarav WebSolutions is dedicated to offering an innovative environment, and interactive marketing service to help their clients in achieving their goals. Our three I’d— Interaction, Innovation, and Inspiration; are valued and promoted here as they can make a difference.
-                        </p>
+                        <div class="grid">
+                            <ul role="list">
+                                @*@foreach (var item in dbContext.Services)
+                                {
+                                    int i = 1;
+                                    string strIconClass = "icon icon-" + i;
+                                    string strImangeSrc = "~/assets/img/icon-" + i + ".png";
 
-                        <ul class="list">
-                            <li>
-                                <img src="~/assets/img/wcu-1.png" alt="" srcset="">
 
-                                <div class="list-content">
-                                    <h3>Interaction</h3>
-                                    <p>Interaction is a valuable golden key in our business strategy. We show our gratitude to our clients by providing them with creative solutions to engage with their social brand.</p>
-                                </div>
-                            </li>
-                            <li>
-                                <img src="~/assets/img/wcu-2.png" alt="" srcset="">
+                                    await Context.Response.Body.WriteAsync(System.Text.Encoding.UTF8.GetBytes(strIconClass), 0, System.Text.Encoding.UTF8.GetBytes(strIconClass).Length);
 
-                                <div class="list-content">
-                                    <h3>Innovation</h3>
-                                    <p>Innovation to us means coming up with fresh marketing strategies, concepts, and ideas while also adding value for our clients.</p>
-                                </div>
-                            </li>
-                            <li>
-                                <img src="~/assets/img/wcu-3.png" alt="" srcset="">
+                                    string htmlCode = @"<a asp-controller=""Service"" asp-action=""Index"" asp-route-Id=" + @item.Id + ">";
+                                    htmlCode = htmlCode+ "<div class='grid-content'>";
+                                    htmlCode = htmlCode + "<div class='"+@strIconClass+"'>";
+                                    htmlCode = htmlCode + "<img src='" + @strImangeSrc + "' alt='' srcset=''>";
+                                    htmlCode = htmlCode + "</div>";
+                                    htmlCode = htmlCode + "<div class='grid-heading'>";
+                                    htmlCode = htmlCode + @item.ServiceTitle;
+                                    htmlCode = htmlCode + "</div>";
+                                    htmlCode = htmlCode + "</div>";
+                                    htmlCode = htmlCode + "</a>";
+                                <li>
+                                    @Html.Raw(htmlCode)
 
-                                <div class="list-content">
-                                    <h3>Inspiration</h3>
-                                    <p>To inspire our clients, we do two things: create and capture a vision. Because, as we all know, positive outcomes are required to create loyalty and commitment, which helps our clients to reach their goals.</p>
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                                        i = i++;
+                                    }*@
+                                <li>
+
+                                    <a asp-controller="Service" asp-action="Index" asp-route-Id=1><div class='grid-content'><div class='icon icon-1'><img src='~/assets/img/icon-1.png' alt='' srcset=''></div><div class='grid-heading'>UX/UI Design Manish</div></div></a>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-1">
+                                                <img src="~/assets/img/icon-1.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                UI/UX Design
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-2">
+                                                <img src="~/assets/img/icon-2.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                Media Marketing
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-3">
+                                                <img src="~/assets/img/icon-3.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                Content Solution
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-4">
+                                                <img src="~/assets/img/icon-4.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                Web Development
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-5">
+                                                <img src="~/assets/img/icon-5.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                Social Media Management
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="grid-content">
+                                            <div class="icon icon-6">
+                                                <img src="~/assets/img/icon-6.png" alt="" srcset="">
+                                            </div>
+                                            <div class="grid-heading">
+                                                Upcoming Services
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+                </section>
 
-                    <div class="right-col">
-                        <div class="img-wrapper">
-                            <img src="~/assets/img/img-1.png" alt="" srcset="">
-                        </div>
+                <section section="why-choose-us">
+                    <div class="container">
+                        <div class="flex-wrapper">
+                            <div class="left-col">
+                                <div class="headings">
 
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section section="testimonial">
-            <div class="container">
-                <div class="headings">
-                    <div class="subHeading">Testimonial </div>
-                    <h2 class="heading">
-                        What Do Our Clients Says
-                        <br>
-                        About Us
-                    </h2>
-                </div>
-
-                <div class="testimonial-wrapper">
-                    <div class="img-wrapper">
-                        <img src="~/assets/img/img-2.png" alt="" srcset="">
-                    </div>
-
-                    <div class="slider">
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
+                                    <h2 class="heading">
+                                        Why Choose Us
+                                    </h2>
                                 </div>
+
+                                <p>
+                                    Make a decision that will boost your sales. Aarav WebSolutions is dedicated to offering an innovative environment, and interactive marketing service to help their clients in achieving their goals. Our three I’d— Interaction, Innovation, and Inspiration; are valued and promoted here as they can make a difference.
+                                </p>
+
+                                <ul class="list">
+                                    <li>
+                                        <img src="~/assets/img/wcu-1.png" alt="" srcset="">
+
+                                        <div class="list-content">
+                                            <h3>Interaction</h3>
+                                            <p>Interaction is a valuable golden key in our business strategy. We show our gratitude to our clients by providing them with creative solutions to engage with their social brand.</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <img src="~/assets/img/wcu-2.png" alt="" srcset="">
+
+                                        <div class="list-content">
+                                            <h3>Innovation</h3>
+                                            <p>Innovation to us means coming up with fresh marketing strategies, concepts, and ideas while also adding value for our clients.</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <img src="~/assets/img/wcu-3.png" alt="" srcset="">
+
+                                        <div class="list-content">
+                                            <h3>Inspiration</h3>
+                                            <p>To inspire our clients, we do two things: create and capture a vision. Because, as we all know, positive outcomes are required to create loyalty and commitment, which helps our clients to reach their goals.</p>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
 
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Smit</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
+                            <div class="right-col">
+                                <div class="img-wrapper">
+                                    <img src="~/assets/img/img-1.png" alt="" srcset="">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
-                                </div>
-                            </div>
 
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Chow</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Smit</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Chow</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Smit</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonials">
-                            <div class="testimonial-content">
-                                <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
-                                <div class="rating">
-                                    <ul>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                        <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="profile">
-                                <img src="~/assets/img/profile.png" alt="" srcset="">
-                                <div class="profile-details">
-                                    <div class="name">David Chow</div>
-                                    <div class="designation">CTO - Digital Harbor</div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
+                </section>
 
+                <section section="testimonial">
+                    <div class="container">
+                        <div class="headings">
+                            <div class="subHeading">Testimonial </div>
+                            <h2 class="heading">
+                                What Do Our Clients Says
+                                <br>
+                                About Us
+                            </h2>
+                        </div>
 
-    </main>
+                        <div class="testimonial-wrapper">
+                            <div class="img-wrapper">
+                                <img src="~/assets/img/img-2.png" alt="" srcset="">
+                            </div>
+
+                            <div class="slider">
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Smit</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Chow</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Smit</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Chow</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Smit</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonials">
+                                    <div class="testimonial-content">
+                                        <p>Aaravwebsolution is a digital marketing company that specializes in offering a range of IT and marketing services around the globe. We are a group of creative thinkers at Aaravwebsolution who collaborate with customers to create incentives for now and the future.</p>
+                                        <div class="rating">
+                                            <ul>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                                <li><img src="~/assets/img/star.png" alt="" srcset=""></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="profile">
+                                        <img src="~/assets/img/profile.png" alt="" srcset="">
+                                        <div class="profile-details">
+                                            <div class="name">David Chow</div>
+                                            <div class="designation">CTO - Digital Harbor</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+        }
+
+            </main>
 
     <footer>
         <section section="footer">
@@ -563,7 +566,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">< script src = "~/lib/jquery/dist/jquery.min.js" ></script>
+    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script> @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

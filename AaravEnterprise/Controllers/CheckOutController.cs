@@ -18,6 +18,8 @@ namespace AaravEnterprise.Controllers
         private AaravEnterprise.Models.Order FinalOrder;
         private OrderDetails OrderDetails;
         private Invoice Invoice;
+        private string sqlquery = "";
+        private int result;
         public CheckOutController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -64,21 +66,50 @@ namespace AaravEnterprise.Controllers
                             PaymentId = "NA"
                         };
 
-                        _dbContext.Order.Add(FinalOrder);
-                        _dbContext.SaveChanges();
-                        int orderID = FinalOrder.Id;
+                        var userOrder = _dbContext.Order.FirstOrDefault(order => order.UserId == userId && order.PaymentStatus == "InCompleted");
+                        int orderID;
+                        if (userOrder != null)
+                        { 
+                            orderID = userOrder.Id;
+                            FinalOrder = _dbContext.Order.FirstOrDefault(U =>U.Id==orderID);
+                            _dbContext.Entry(userOrder).State = EntityState.Detached;
+
+                            if (ModelState.IsValid)
+                            {
+                                FinalOrder = new Models.Order
+                                {
+                                    Id = orderID,
+                                    UserId = userId,
+                                    OrderDate = DateTime.UtcNow,
+                                    TotalAmount = total,
+                                    OrderStatus = "Payment Pending",
+                                    PaymentStatus = "InCompleted",
+                                    PaymentDate = DateTime.UtcNow,
+                                    PaymentId = "NA"
+                                };
+                                _dbContext.Order.Update(FinalOrder);
+                                _dbContext.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            _dbContext.Order.Add(FinalOrder);
+                            _dbContext.SaveChanges();
+                            orderID = FinalOrder.Id;
+                        }
+
+                        sqlquery = $@"DELETE FROM [OrderDetails] WHERE OrderId=" + orderID + ";";
+                        result = _dbContext.Database.ExecuteSqlRaw(sqlquery);
 
                         OrderDetails = new OrderDetails();
 
                         foreach (CartViewModel cartItem in cart)
-                        {
-                            int orderId = orderID;
+                        {   
                             int serviceId = cartItem.ServiceId;
                             int quantity = 1;
                             decimal price = cartItem.Amount;
-                             total = cartItem.Amount;
 
-                            string sqlquery = $@"SET IDENTITY_INSERT [OrderDetails] OFF;
+                             sqlquery = $@"SET IDENTITY_INSERT [OrderDetails] OFF;
                                         INSERT INTO [OrderDetails]
                                         ([OrderId]
                                         ,[ServiceId]
@@ -86,14 +117,14 @@ namespace AaravEnterprise.Controllers
                                         ,[Price]
                                         ,[Total])
                                 VALUES
-                                        ({orderId}
+                                        ({orderID}
                                         ,{serviceId}
                                         ,{quantity}
                                         ,{price}
-                                        ,{total})
+                                        ,{price})
 
                                          SET IDENTITY_INSERT [OrderDetails] ON;";
-                            int result = _dbContext.Database.ExecuteSqlRaw(sqlquery);
+                            result = _dbContext.Database.ExecuteSqlRaw(sqlquery);
                         }
 
                         Invoice = new Invoice()
@@ -102,18 +133,14 @@ namespace AaravEnterprise.Controllers
                             InvoiceDate = System.DateTime.Now,
                             Amount = total
                         };
+
+                         sqlquery = $@"DELETE FROM [Invoice] WHERE OrderId=" + orderID + ";";
+                         result = _dbContext.Database.ExecuteSqlRaw(sqlquery);
+
                         _dbContext.Invoice.Add(Invoice);
                         _dbContext.SaveChanges();
 
-                        //foreach (CartViewModel cartItem in cart)
-                        //{
-                        //    Cart rowToRemove = _dbContext.Cart.Find(cartItem.CartId);
-                        //    if (rowToRemove != null)
-                        //    {
-                        //        _dbContext.Cart.Remove(rowToRemove);
-                        //    }
-                        //}
-                        //_dbContext.SaveChanges();
+                     
                         transaction.Commit();
                     }
                     catch (Exception)

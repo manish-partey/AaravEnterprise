@@ -51,6 +51,23 @@ namespace AaravEnterprise.Controllers
                 System.Collections.Generic.List<CartViewModel> cart = query.ToList();
                 int total = query.Sum(p => p.Amount);
                 ViewBag.Total = total; //
+
+
+                //var queryResult = from invoice in _dbContext.Invoice
+                //                  join order in _dbContext.Order on invoice.OrderId equals order.Id
+                //                  where order.UserId == userId
+                //                  select new
+                //                  {
+                //                      invoice.InvoiceId,
+                //                      invoice.InvoiceDate,
+                //                      order.Id,
+                //                      order.UserId
+                //                  };
+
+                //var resultItem = queryResult.FirstOrDefault(); // Get the first (or default) result
+
+                //int InvoiceId = resultItem.InvoiceId; // Access UserId property if result is not null
+                
                 using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _dbContext.Database.BeginTransaction())
                 {
                     try
@@ -140,7 +157,8 @@ namespace AaravEnterprise.Controllers
                         _dbContext.Invoice.Add(Invoice);
                         _dbContext.SaveChanges();
 
-                     
+                        ViewBag.InvoiceId = Invoice.InvoiceId;
+
                         transaction.Commit();
                     }
                     catch (Exception)

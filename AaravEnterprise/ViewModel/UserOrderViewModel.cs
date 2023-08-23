@@ -12,5 +12,7 @@ namespace AaravEnterprise.ViewModel
         public string CustEmail { get; set; }
         public string CustPhoneNumber { get; set; }
         public double TotalAmount { get; set; }
+        public int Id { get; set; }
+        public int InvoiceId { get; set; }
     }
 }

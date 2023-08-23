@@ -40,12 +40,25 @@ namespace AaravEnterprise.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Paypalvtwo(string Cancel = null)
+        public async Task<ActionResult> Paypalvtwo(int invoiceID, string Cancel = null)
         {
 
-            List<CartViewModel> cartViewModels = new List<CartViewModel>();
-            ClaimsIdentity claimsIdentity = (ClaimsIdentity)User.Identity;
-            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var queryResult = from invoice in _dbContext.Invoice
+                              join order in _dbContext.Order on invoice.OrderId equals order.Id
+                              where invoice.InvoiceId == invoiceID
+                              select new
+                              {
+                                  invoice.InvoiceId,
+                                  invoice.InvoiceDate,
+                                  order.Id,
+                                  order.UserId
+                              };
+
+            var resultItem = queryResult.FirstOrDefault(); // Get the first (or default) result
+
+            string userId = resultItem?.UserId; // Access UserId property if result is not null
+
+            List<CartViewModel> cartViewModels = new List<CartViewModel>();        
 
             IQueryable<CartViewModel> query = from C in _dbContext.Cart
                                               join S in _dbContext.Services on C.ServiceId equals S.Id

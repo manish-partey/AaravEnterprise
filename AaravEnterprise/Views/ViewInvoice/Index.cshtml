@@ -1,0 +1,76 @@
+﻿@model List<AaravEnterprise.ViewModel.InCompleteOrderViewModel>
+@{
+    ViewData["Title"] = "InCompleted Order";
+    List<Order> objOrder = ViewBag.UserOrder;
+}
+<div class="container">
+    <div class="headings">
+        <h2 class="heading">InCompleted Orders</h2>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 style="text-align:center">Invoice Detail</h2>
+            <div class="row">
+                @foreach (var userOrder in Model)
+                {
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Name</small> <br>@userOrder.Name</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Email ID</small> <br>@userOrder.Email</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Mobile</small> <br>@userOrder.PhoneNumber</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Date</small> <br>@userOrder.InvoiceDate</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Amount</small> <br>$ @userOrder.Amount</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align:center"><small>Payment Status</small> <br>@userOrder.PaymentStatus</h4>
+                    </div>
+                    break;
+                }
+                </div>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var userOrder in Model)
+                    {
+                        <tr>
+                            <td scope="row"> @userOrder.ServiceTitle</td>
+                            <td scope="row"> 1</td>
+                            <td scope="row"> @userOrder.Price</td>
+                            <td scope="row"> @userOrder.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="table">
+                <tbody>
+                    <tr class="payment-checkout-text">
+                        <td>
+                            <strong>Total Amount Payble : </strong><strong>$@ViewBag.Total.ToString()</strong>
+                        </td>
+                    </tr>
+
+                    <tr style="padding-top:50px">
+                        <td style="float:right">
+                            <img src="" />
+                            <a asp-action="Paypalvtwo" asp-route-invoiceID="@ViewBag.InvoiceId.ToString()" asp-controller="PaypalPayment"><img style="height: 40px; width: 150px; background: #ffc439" src="~/assets/img/Paypal.svg" /></a>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    </div>

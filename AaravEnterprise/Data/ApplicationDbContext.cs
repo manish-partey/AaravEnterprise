@@ -17,6 +17,7 @@ namespace AaravEnterprise.DataAccess
         public DbSet<Services> Services { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
+        public DbSet<Country> Countries { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

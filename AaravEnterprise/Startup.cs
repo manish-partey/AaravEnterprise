@@ -33,6 +33,7 @@ namespace AaravEnterprise
             services.AddScoped<CustomEmailSender>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<CountryService>();
             services.AddControllersWithViews();
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
             string sectionName = _environment.IsDevelopment() ? "Localhost" : "Domain";
@@ -44,6 +45,17 @@ namespace AaravEnterprise
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Other Identity options...
+
+                options.Password.RequireDigit = true; // You can choose to require digits or not
+                options.Password.RequireNonAlphanumeric = false; // Remove non-alphanumeric requirement
+                options.Password.RequireLowercase = false; // Remove lowercase requirement
+                options.Password.RequireUppercase = false; // Remove uppercase requirement
+                options.Password.RequiredLength = 6; // Set the desired minimum length
+            });
+
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);

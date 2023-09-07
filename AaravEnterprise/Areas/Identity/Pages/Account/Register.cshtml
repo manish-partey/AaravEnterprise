@@ -59,6 +59,17 @@
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
                 <div class="login-form-inner">
+                    <label asp-for="Input.Country"></label>
+                    <select asp-for="Input.Country" class="form-control">
+                        <option value="">Select Country</option>
+                        @foreach (var country in Model.countries)
+                        {
+                            <option value="@country.Name">@country.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="login-form-inner">
                     <recaptcha language="en-GB" />
                 </div>
                 <button type="submit" class="btn btn-primary register-button">Register</button>

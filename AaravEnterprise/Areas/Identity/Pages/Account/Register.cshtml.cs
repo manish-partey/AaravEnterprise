@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private readonly CountryService _countryService;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -34,7 +36,8 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IReCaptchaService reCaptchaService)
+            IReCaptchaService reCaptchaService,
+            CountryService countryService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -42,12 +45,16 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _reCaptchaService = reCaptchaService;
+            _countryService = countryService;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        [BindProperty]
+        public List<Country> countries { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
@@ -85,6 +92,44 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             public string? State { get; set; }
             [Display(Name = "Postal Code")]
             public string? PostalCode { get; set; }
+
+            [Required]
+            [RequiredIfNotSelectCountry("Country")]
+            [Display(Name = "Country")]
+            public string Country { get; set; }
+
+
+            [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+            public class RequiredIfNotSelectCountryAttribute : ValidationAttribute
+            {
+                private readonly string _comparisonProperty;
+
+                public RequiredIfNotSelectCountryAttribute(string comparisonProperty)
+                {
+                    _comparisonProperty = comparisonProperty;
+                }
+
+                protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+                {
+                    var comparisonProperty = validationContext.ObjectType.GetProperty(_comparisonProperty);
+                    if (comparisonProperty == null)
+                    {
+                        throw new ArgumentException($"Property {_comparisonProperty} not found.");
+                    }
+
+                    var comparisonValue = comparisonProperty.GetValue(validationContext.ObjectInstance, null);
+
+                    if (comparisonValue != null && string.Equals(comparisonValue.ToString(), "Select Country", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+                        {
+                            return new ValidationResult(ErrorMessage);
+                        }
+                    }
+
+                    return ValidationResult.Success;
+                }
+            }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -98,6 +143,10 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
             }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+
+            countries = _countryService.GetAllCountries();
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -111,7 +160,7 @@ namespace AaravEnterprise.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "Please Validate Captcha!");
                     return Page();
                 }
-                ApplicationUser user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, Name = Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode };
+                ApplicationUser user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, Name = Input.Name, StreetAddress = Input.StreetAddress, City = Input.City, State = Input.State, PostalCode = Input.PostalCode, Country=Input.Country };
                 IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

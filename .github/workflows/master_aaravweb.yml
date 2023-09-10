@@ -1,3 +1,5 @@
+gettin Error: Error: ENOENT: no such file or directory, scandir 'D:\a\AaravEnterprise\AaravEnterprise\myapp' for below github action
+
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
@@ -26,13 +28,25 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp/
+          path: ${{env.DOTNET_ROOT}}/myapp
+          
+      - name: List files in publish directory
+        run: |
+            ls -R ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Debug GitHub Workspace
+        run: echo "GitHub Workspace: ${{ github.workspace }}"
+
+      - name: Debug Publish Path
+        run: echo "Publish Path: ${{env.DOTNET_ROOT}}/myapp"
+
 
   deploy:
     runs-on: windows-latest

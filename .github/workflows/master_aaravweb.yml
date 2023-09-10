@@ -1,68 +1,34 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP.Net Core app to Azure Web App - aaravweb
+name: Deploy to FTP
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
-          include-prerelease: true
-
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-          
-      - name: List files in publish directory
-        run: |
-            ls -R ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Debug GitHub Workspace
-        run: echo "GitHub Workspace:" ${{ github.workspace }}
-
-      - name: Debug Publish Path
-        run: echo "Publish Path:" ${{env.DOTNET_ROOT}}/myapp
-
-
   deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: .net-app
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Deploy to BigRock
-        uses: SamKirkland/FTP-Deploy-Action@master
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ${{ github.workspace }}/myapp/
-          server-dir: ${{ secrets.DEPLOY_PATH }}/ 
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1'  # Replace with your desired .NET Core version
+
+    - name: Build the project
+      run: dotnet build --configuration Release
+
+    - name: Publish the project
+      run: dotnet publish -c Release -o publish
+
+    - name: Deploy to FTP
+      uses: SamKirkland/FTP-Deploy-Action@3.1
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: '/path/to/ftp/directory'  # Replace with your desired FTP directory path
+        local-dir: './publish'  # The directory to upload to FTP, change accordingly

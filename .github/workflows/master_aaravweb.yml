@@ -48,7 +48,7 @@ jobs:
           name: .net-app
 
       - name: Deploy to BigRock
-        uses: SamKirkland/FTP-Deploy-Action@4.0
+        uses: SamKirkland/FTP-Deploy-Action@v3
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}

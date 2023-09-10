@@ -53,5 +53,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ${{ github.workspace }}/myapp/
-          server-dir: ${{ secrets.DEPLOY_PATH }}
+          local-dir: ${{ github.workspace }}/myapp
+          server-dir: ${{ secrets.DEPLOY_PATH }}/ 

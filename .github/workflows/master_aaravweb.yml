@@ -30,7 +30,6 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
@@ -42,7 +41,7 @@ jobs:
             ls -R ${{env.DOTNET_ROOT}}/myapp
 
       - name: Debug GitHub Workspace
-        run: echo "GitHub Workspace: ${{ github.workspace }}"
+        run: echo "GitHub Manish Workspace: ${{ github.workspace }}"
 
       - name: Debug Publish Path
         run: echo "Publish Path: ${{env.DOTNET_ROOT}}/myapp"

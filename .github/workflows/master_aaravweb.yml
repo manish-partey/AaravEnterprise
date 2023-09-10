@@ -47,11 +47,11 @@ jobs:
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+      - name: Deploy to BigRock
+        uses: SamKirkland/FTP-Deploy-Action@4.0
         with:
-          app-name: 'aaravweb'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8271F71EA20A4BA09655A3DA3E2FE295 }}
-          package: .
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ${{ github.workspace }}/myapp
+          server-dir: ${{ secrets.DEPLOY_PATH }}

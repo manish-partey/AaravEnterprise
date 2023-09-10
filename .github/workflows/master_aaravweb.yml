@@ -30,5 +30,5 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: '/path/to/ftp/directory'  # Replace with your desired FTP directory path
+        server-dir: ${{ secrets.DEPLOY_PATH }}/   # Replace with your desired FTP directory path
         local-dir: './publish'  # The directory to upload to FTP, change accordingly

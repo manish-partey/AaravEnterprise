@@ -39,10 +39,10 @@ jobs:
             ls -R ${{env.DOTNET_ROOT}}/myapp
 
       - name: Debug GitHub Workspace
-        run: echo "GitHub Workspace: ${{ github.workspace }}"
+        run: echo "GitHub Workspace:" ${{ github.workspace }}
 
       - name: Debug Publish Path
-        run: echo "Publish Path: ${{env.DOTNET_ROOT}}/myapp"
+        run: echo "Publish Path:" ${{env.DOTNET_ROOT}}/myapp
 
 
   deploy:

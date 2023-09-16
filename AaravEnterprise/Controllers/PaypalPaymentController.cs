@@ -3,6 +3,7 @@ using AaravEnterprise.Models;
 using AaravEnterprise.Utility;
 using AaravEnterprise.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -42,21 +43,38 @@ namespace AaravEnterprise.Controllers
 
         public async Task<ActionResult> Paypalvtwo(int invoiceID, string Cancel = null)
         {
+            string userId = "";
+            if (HttpContext.Session.GetString("invoiceID") == null)
+                HttpContext.Session.SetString("invoiceID", Convert.ToString(invoiceID));
 
-            var queryResult = from invoice in _dbContext.Invoice
-                              join order in _dbContext.Order on invoice.OrderId equals order.Id
-                              where invoice.InvoiceId == invoiceID
-                              select new
-                              {
-                                  invoice.InvoiceId,
-                                  invoice.InvoiceDate,
-                                  order.Id,
-                                  order.UserId
-                              };
 
-            var resultItem = queryResult.FirstOrDefault(); // Get the first (or default) result
+            if (invoiceID != 0 || HttpContext.Session.GetString("invoiceID")!=null)
+            {
+                if (invoiceID == 0)
+                {
+                    invoiceID = Convert.ToInt32(HttpContext.Session.GetString("invoiceID"));
+                }
 
-            string userId = resultItem?.UserId; // Access UserId property if result is not null
+                var queryResult = from invoice in _dbContext.Invoice
+                                  join order in _dbContext.Order on invoice.OrderId equals order.Id
+                                  where invoice.InvoiceId == invoiceID
+                                  select new
+                                  {
+                                      invoice.InvoiceId,
+                                      invoice.InvoiceDate,
+                                      order.Id,
+                                      order.UserId
+                                  };
+
+                var resultItem = queryResult.FirstOrDefault(); // Get the first (or default) result
+
+                userId = resultItem?.UserId; // Access UserId property if result is not null
+            }
+            else
+            {
+                ClaimsIdentity claimsIdentity = (ClaimsIdentity)User.Identity;
+                userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
 
             List<CartViewModel> cartViewModels = new List<CartViewModel>();        
 
@@ -229,47 +247,18 @@ namespace AaravEnterprise.Controllers
             {
                 try
                 {
-                    FinalOrder = new Models.Order
+                    var existingOrder = _dbContext.Order.FirstOrDefault(x => x.UserId == userId && x.PaymentStatus == "InCompleted");
+                    if (existingOrder != null)
                     {
-                        UserId = userId,
-                        OrderDate = DateTime.UtcNow,
-                        TotalAmount = orderAmount,
-                        OrderStatus = "Completed",
-                        PaymentStatus = "Completed",
-                        PaymentDate = DateTime.UtcNow,
-                        PaymentId = paymentId
-                    };
+                        existingOrder.UserId = userId;
+                        existingOrder.OrderDate = DateTime.UtcNow;
+                        existingOrder.TotalAmount = orderAmount;
+                        existingOrder.OrderStatus = "Completed";
+                        existingOrder.PaymentStatus = "Completed";
+                        existingOrder.PaymentDate = DateTime.UtcNow;
+                        existingOrder.PaymentId = paymentId;
 
-                    _dbContext.Order.Add(FinalOrder);
-                    _dbContext.SaveChanges();
-                    int orderID = FinalOrder.Id;
-
-                    OrderDetails = new OrderDetails();
-
-                    foreach (CartViewModel cartItem in cartViewModels)
-                    {
-                        int orderId = orderID;
-                        int serviceId = cartItem.ServiceId;
-                        int quantity = 1;
-                        decimal price = cartItem.Amount;
-                        decimal total = cartItem.Amount;
-
-                        string query = $@"SET IDENTITY_INSERT [OrderDetails] OFF;
-                                        INSERT INTO [OrderDetails]
-                                        ([OrderId]
-                                        ,[ServiceId]
-                                        ,[Quantity]
-                                        ,[Price]
-                                        ,[Total])
-                                VALUES
-                                        ({orderId}
-                                        ,{serviceId}
-                                        ,{quantity}
-                                        ,{price}
-                                        ,{total})
-
-                                         SET IDENTITY_INSERT [OrderDetails] ON;";
-                        int result = _dbContext.Database.ExecuteSqlRaw(query);
+                        _dbContext.SaveChanges();
                     }
 
                     foreach (CartViewModel cartItem in cartViewModels)

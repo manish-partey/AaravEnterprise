@@ -20,6 +20,7 @@ namespace AaravEnterprise.Controllers
                         join cart in _dbContext.Cart on user.Id equals cart.ApplicationUserId
                         join order in _dbContext.Order on user.Id equals order.UserId
                         join invoice in _dbContext.Invoice on order.Id equals invoice.OrderId
+                        where order.PaymentStatus == "InCompleted"
                         group new { user, invoice, order } by new
                         {
                             UserId = user.Id,
@@ -40,6 +41,7 @@ namespace AaravEnterprise.Controllers
                             Id = grouped.Key.OrderId,
                             TotalAmount = grouped.Key.TotalAmount
                         };
+
 
             var result = query.ToList();
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";

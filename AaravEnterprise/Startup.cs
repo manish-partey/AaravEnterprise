@@ -35,6 +35,12 @@ namespace AaravEnterprise
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<CountryService>();
             services.AddControllersWithViews();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set the session timeout as needed
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppDBConnectionString")));
             string sectionName = _environment.IsDevelopment() ? "Localhost" : "Domain";
             IConfigurationSection appSettingsSection = Configuration.GetSection("RecaptchaSettings").GetSection(sectionName);

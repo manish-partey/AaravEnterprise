@@ -2,7 +2,7 @@
 <div class="container">
     <div class="headings">
         <h2 class="heading">Users</h2>
-    </div>    
+    </div>
     <div class="row">
         @if (TempData.ContainsKey("PasswordChanged"))
         {
@@ -20,7 +20,6 @@
                     <th scope="col">State</th>
                     <th scope="col">Edit</th>
                     <th scope="col"></th>
-
                 </tr>
             </thead>
             <tbody>
@@ -46,5 +45,19 @@
                 }
             </tbody>
         </table>
+
+        <!-- Pagination Links -->
+        <nav aria-label="Page navigation" style="text-align: center;">
+            <!-- Center align pagination -->
+            <ul class="pagination pagination-lg">
+                <!-- Bigger size pagination -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
-</div>    
+</div>

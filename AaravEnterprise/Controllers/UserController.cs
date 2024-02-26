@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +17,22 @@ namespace AaravEnterprise.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            List<ApplicationUser> objUserList = _dbContext.ApplicationUser.ToList();
+            var totalRecords = _dbContext.ApplicationUser.Count();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+            var userList = _dbContext.ApplicationUser.Skip((page - 1) * pageSize)
+                                                       .Take(pageSize)
+                                                       .ToList();
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
-            return View(objUserList);
+            return View(userList);
         }
+
         private readonly ApplicationDbContext _dbContext;
         public UserController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {

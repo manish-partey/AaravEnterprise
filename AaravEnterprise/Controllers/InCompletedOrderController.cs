@@ -1,6 +1,7 @@
 ﻿using AaravEnterprise.DataAccess;
 using AaravEnterprise.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,9 +14,8 @@ namespace AaravEnterprise.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
-
             var query = from user in _dbContext.ApplicationUser
                         join cart in _dbContext.Cart on user.Id equals cart.ApplicationUserId
                         join order in _dbContext.Order on user.Id equals order.UserId
@@ -42,11 +42,17 @@ namespace AaravEnterprise.Controllers
                             TotalAmount = grouped.Key.TotalAmount
                         };
 
+            var paginatedResult = query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToList();
 
-            var result = query.ToList();
+            ViewBag.TotalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
+            ViewBag.CurrentPage = page;
+
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
-            return View(result);
+            return View(paginatedResult);
         }
+
 
         public IActionResult OrderDetails(string UserId)
         {

@@ -2,6 +2,7 @@
 using AaravEnterprise.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 
@@ -15,15 +16,27 @@ namespace AaravEnterprise.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            System.Collections.Generic.List<Order> CompletedOrder = _dbContext.Order
-            .Where(o => o.OrderStatus == "Completed")
-            .ToList();
+            // Filter completed orders and count the total number of completed orders
+            var completedOrders = _dbContext.Order
+                                            .Where(o => o.OrderStatus == "Completed")
+                                            .ToList();
+            var totalCompletedOrders = completedOrders.Count();
 
-            ViewBag.UserOrder = CompletedOrder;
+            // Paginate the completed orders based on the page and pageSize parameters
+            var paginatedCompletedOrders = completedOrders.Skip((page - 1) * pageSize)
+                                                         .Take(pageSize)
+                                                         .ToList();
+
+            // Pass the paginated orders and pagination metadata to the view
+            ViewBag.UserOrder = paginatedCompletedOrders;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCompletedOrders / pageSize);
+            ViewBag.CurrentPage = page;
+
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View();
         }
+
     }
 }

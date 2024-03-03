@@ -18,8 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AaravEnterprise.Controllers
-{
-    [Authorize]
+{  
     public class PaypalPaymentController : Controller
     {
         private readonly CustomEmailSender _emailSender;

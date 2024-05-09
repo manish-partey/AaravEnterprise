@@ -20,7 +20,7 @@ namespace AaravEnterprise.Controllers
         {
             // Filter completed orders and count the total number of completed orders
             var completedOrders = _dbContext.Order
-                                            .Where(o => o.OrderStatus == "Completed")
+                                            .Where(o => o.OrderStatus == "Completed").OrderByDescending(o => o.OrderDate)
                                             .ToList();
             var totalCompletedOrders = completedOrders.Count();
 

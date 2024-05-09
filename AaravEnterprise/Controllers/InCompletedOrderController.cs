@@ -16,31 +16,36 @@ namespace AaravEnterprise.Controllers
         }
         public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            var query = from user in _dbContext.ApplicationUser
-                        join cart in _dbContext.Cart on user.Id equals cart.ApplicationUserId
-                        join order in _dbContext.Order on user.Id equals order.UserId
-                        join invoice in _dbContext.Invoice on order.Id equals invoice.OrderId
-                        where order.PaymentStatus == "InCompleted"
-                        group new { user, invoice, order } by new
-                        {
-                            UserId = user.Id,
-                            user.Name,
-                            user.Email,
-                            user.PhoneNumber,
-                            InvoiceId = invoice.InvoiceId,
-                            OrderId = order.Id,
-                            order.TotalAmount
-                        } into grouped
-                        select new UserOrderViewModel
-                        {
-                            UserId = grouped.Key.UserId,
-                            CustName = grouped.Key.Name,
-                            CustEmail = grouped.Key.Email,
-                            CustPhoneNumber = grouped.Key.PhoneNumber,
-                            InvoiceId = grouped.Key.InvoiceId,
-                            Id = grouped.Key.OrderId,
-                            TotalAmount = grouped.Key.TotalAmount
-                        };
+            var query = (from u in _dbContext.ApplicationUser
+                         join c in _dbContext.Cart on u.Id equals c.ApplicationUserId
+                         join o in _dbContext.Order on u.Id equals o.UserId
+                         join i in _dbContext.Invoice on o.Id equals i.OrderId
+                         where o.PaymentStatus == "InCompleted"
+                         group new { u, i, o } by new
+                         {
+                             UserId = u.Id,
+                             u.Name,
+                             u.Email,
+                             u.PhoneNumber,
+                             InvoiceId = i.InvoiceId,
+                             OrderId = o.Id,
+                             o.TotalAmount
+                         } into grouped
+                         orderby grouped.Max(g => g.i.InvoiceDate) descending
+                         select new UserOrderViewModel
+                         {
+                             UserId = grouped.Key.UserId,
+                             CustName = grouped.Key.Name,
+                             CustEmail = grouped.Key.Email,
+                             CustPhoneNumber = grouped.Key.PhoneNumber,
+                             MaxInvoiceDate = grouped.Max(g => g.i.InvoiceDate),
+                             InvoiceId = grouped.Key.InvoiceId,
+                             Id = grouped.Key.OrderId,
+                             TotalAmount = grouped.Key.TotalAmount
+                         }).ToList();
+
+
+
 
             var paginatedResult = query.Skip((page - 1) * pageSize)
                                        .Take(pageSize)

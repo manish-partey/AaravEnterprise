@@ -14,5 +14,6 @@ namespace AaravEnterprise.ViewModel
         public double TotalAmount { get; set; }
         public int Id { get; set; }
         public int InvoiceId { get; set; }
+        public DateTime MaxInvoiceDate { get; set; }
     }
 }

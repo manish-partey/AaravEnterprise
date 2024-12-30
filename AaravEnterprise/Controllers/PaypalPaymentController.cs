@@ -196,46 +196,46 @@ namespace AaravEnterprise.Controllers
 
         public void SendOrderConfirmationEmail(string userId, double orderAmount, string paymentId, List<CartViewModel> cartViewModels)
         {
-            ApplicationUser objUser = _dbContext.ApplicationUser.FirstOrDefault(c => c.Id == userId);
+            var objUser = _dbContext.ApplicationUser.FirstOrDefault(c => c.Id == userId);
 
-            StringBuilder emailBody = new StringBuilder();
-            emailBody.Append("<html>");
-            emailBody.Append("<head>");
-            emailBody.Append("<title>Order Confirmation</title>");
-            emailBody.Append("</head>");
-            emailBody.Append("<body>");
-            emailBody.Append("<h1>Order Confirmation</h1>");
-            emailBody.Append("<p>Dear " + objUser.Name + ",</p>");
-            emailBody.Append("<p>Thank you for your order! We are pleased to confirm that your order has been received and is being processed.</p>");
-            emailBody.Append("<h2>Order Details</h2>");
-            emailBody.Append("<table>");
-            emailBody.Append("<thead>");
-            emailBody.Append("<tr>");
-            emailBody.Append("<th>Service</th>");
-            emailBody.Append("<th>Package</th>");
-            emailBody.Append("<th>Amount</th>");
-            emailBody.Append("</tr>");
-            emailBody.Append("</thead>");
-            emailBody.Append("<tbody>");
-            foreach (CartViewModel cartItem in cartViewModels)
+            if (objUser == null) return; // Check if user exists
+
+            var emailBody = new StringBuilder()
+                .Append("<html>")
+                .Append("<head>")
+                .Append("<title>Order Confirmation</title>")
+                .Append("</head>")
+                .Append("<body>")
+                .Append("<h1>Order Confirmation</h1>")
+                .AppendFormat("<p>Dear {0},</p>", objUser.Name)
+                .Append("<p>Thank you for your order! We are pleased to confirm that your order has been received and is being processed.</p>")
+                .Append("<h2>Order Details</h2>")
+                .Append("<table>")
+                .Append("<thead>")
+                .Append("<tr>")
+                .Append("<th>Service</th>")
+                .Append("<th>Package</th>")
+                .Append("<th>Amount</th>")
+                .Append("</tr>")
+                .Append("</thead>")
+                .Append("<tbody>");
+
+            foreach (var cartItem in cartViewModels)
             {
-
-                emailBody.Append("<tr>");
-                emailBody.Append("<td>" + cartItem.ServiceTitle + "</td>");
-                emailBody.Append("<td>" + cartItem.PackageTitle + "</td>");
-                emailBody.Append("<td>" + cartItem.Amount + "</td>");
-                emailBody.Append("</tr>");
+                emailBody.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>", cartItem.ServiceTitle, cartItem.PackageTitle, cartItem.Amount);
             }
-            emailBody.Append("</tbody>");
-            emailBody.Append("</table>");
-            emailBody.Append("<p>Total Amount: USD " + orderAmount + " </p>");
-            emailBody.Append("<h2>Payment Information</h2>");
-            emailBody.Append("<p>Payment Reference Number: " + paymentId + "</p>");
-            emailBody.Append("<p>If you have any questions regarding your order, please feel free to contact our customer support team.</p>");
-            emailBody.Append("<p>Thank you for shopping with us!</p>");
-            emailBody.Append("<p>Sincerely,<br> Aarav Enterprise</p>");
-            emailBody.Append("</body>");
-            emailBody.Append("</html>");
+
+            emailBody
+                .Append("</tbody>")
+                .Append("</table>")
+                .AppendFormat("<p>Total Amount: USD {0}</p>", orderAmount)
+                .Append("<h2>Payment Information</h2>")
+                .AppendFormat("<p>Payment Reference Number: {0}</p>", paymentId)
+                .Append("<p>If you have any questions regarding your order, please feel free to contact our customer support team.</p>")
+                .Append("<p>Thank you for shopping with us!</p>")
+                .Append("<p>Sincerely,<br> Aarav Enterprise</p>")
+                .Append("</body>")
+                .Append("</html>");
 
             _emailSender.SendEmail(objUser.Email, "Payment Confirmation for Aarav Enterprise", emailBody.ToString());
         }

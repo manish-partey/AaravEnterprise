@@ -7,16 +7,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # 👈 using 20.04 to support .NET Core 3.1
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Install libssl1.1 for .NET Core 3.1 compatibility
-      run: |
-        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1

@@ -47,17 +47,37 @@
         </table>
 
         <!-- Pagination Links -->
-        <nav aria-label="Page navigation" style="display:flex; justify-content:center;">
-            <!-- Center align pagination -->
+        <nav aria-label="Page navigation" style="display:flex; justify-content:center; margin-top: 20px;">
             <ul class="pagination pagination-lg">
-                <!-- Bigger size pagination -->
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                        <a class="page-link" href="?page=@i">@i</a>
-                    </li>
-                }
+
+                <!-- First Page -->
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+
+                <!-- Previous Page -->
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">Previous</a>
+                </li>
+
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Page @ViewBag.CurrentPage of @ViewBag.TotalPages
+                    </span>
+                </li>
+
+                <!-- Next Page -->
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">Next</a>
+                </li>
+
+                <!-- Last Page -->
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?page=@ViewBag.TotalPages">Last</a>
+                </li>
+
             </ul>
         </nav>
+
     </div>
 </div>

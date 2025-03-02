@@ -22,9 +22,15 @@ namespace AaravEnterprise.Controllers
             var totalRecords = _dbContext.ApplicationUser.Count();
             var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
-            var userList = _dbContext.ApplicationUser.Skip((page - 1) * pageSize)
-                                                       .Take(pageSize)
-                                                       .ToList();
+            if (page < 1)
+                page = 1;
+            if (page > totalPages)
+                page = totalPages;
+
+            var userList = _dbContext.ApplicationUser
+                                      .Skip((page - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .ToList();
 
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = page;
@@ -32,6 +38,7 @@ namespace AaravEnterprise.Controllers
             ViewBag.UseAlternateLayout = RouteData.Values["controller"].ToString() == "";
             return View(userList);
         }
+
 
         private readonly ApplicationDbContext _dbContext;
         public UserController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IEmailSender emailSender)
